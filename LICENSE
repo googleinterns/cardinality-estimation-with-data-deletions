@@ -208,3 +208,11 @@
    1. Source code: https://github.com/apache/incubator-datasketches-cpp
       Code locations: ./incubator-datasketches-cpp/
       Copyright (c) Apache Software Foundation.
+
+
+   =====================================================================================
+   BSD 3-Clause Licenses
+   =====================================================================================
+
+   1. Source code: https://github.com/google/googletest
+      Copyright (c) Google Inc.
