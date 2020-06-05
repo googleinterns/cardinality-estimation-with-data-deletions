@@ -6,9 +6,11 @@ cc_test(
     copts = [
         "-Ithird_party/incubator-datasketches-cpp/theta",
         "-Ithird_party/incubator-datasketches-cpp/common",
+        "-Itheta_dup/include",
     ],
     deps = [
         "//third_party/incubator-datasketches-cpp:theta",
+        "//theta_dup:theta_dup",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

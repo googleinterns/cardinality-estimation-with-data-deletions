@@ -20,5 +20,5 @@ cc_library(
         "common/memory_operations.hpp",
         "common/serde.hpp",
     ],
-    visibility = ["//:__pkg__","//test:__pkg__"],
+    visibility = ["//:__pkg__","//theta_dup:__pkg__","//test:__pkg__"],
 )
