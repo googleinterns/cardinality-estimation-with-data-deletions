@@ -277,6 +277,7 @@ string<A> update_theta_sketch_dup_alloc<A>::to_string(bool print_items) const {
 
 template<typename A>
 void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
+
   const uint8_t preamble_longs_and_rf = 3 | (rf_ << 6);
   os.write((char*)&preamble_longs_and_rf, sizeof(preamble_longs_and_rf));
   const uint8_t serial_version = theta_sketch_dup_alloc<A>::SERIAL_VERSION;
@@ -300,6 +301,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
 
 template<typename A>
 vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(unsigned header_size_bytes) const {
+
   const uint8_t preamble_longs = 3;
   // updated in dup: pair instead of uint64_t
   const size_t size = header_size_bytes + sizeof(uint64_t) * preamble_longs + sizeof(std::pair<uint64_t, uint64_t>) * keys_.size();
@@ -353,6 +355,12 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(s
 }
 
 template<typename A>
+void update_theta_sketch_dup_alloc<A>::output_keys() {
+  for (auto k:keys_) std::cout << k.first << " " << k.second << std::endl;
+  std::cout << std::endl;
+}
+
+template<typename A>
 update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::internal_deserialize(std::istream& is, resize_factor rf, uint8_t lg_cur_size, uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed) {
   uint32_t num_keys;
   is.read((char*)&num_keys, sizeof(num_keys));
@@ -361,7 +369,7 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::internal_dese
   uint64_t theta;
   is.read((char*)&theta, sizeof(theta));
   vector_u64<A> keys(1 << lg_cur_size);
-  is.read((char*)keys.data(), sizeof(uint64_t) * keys.size());
+  is.read((char*)keys.data(), sizeof(std::pair<uint64_t,uint64_t>) * keys.size());
   const bool is_empty = flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   if (!is.good()) throw std::runtime_error("error reading from std::istream"); 
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size, lg_nom_size, std::move(keys), num_keys, rf, p, seed);
@@ -369,6 +377,7 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::internal_dese
 
 template<typename A>
 update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(const void* bytes, size_t size, uint64_t seed) {
+
   ensure_minimum_memory(size, 8);
   const char* ptr = static_cast<const char*>(bytes);
   uint8_t preamble_longs;
@@ -405,7 +414,7 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::internal_dese
   uint64_t theta;
   ptr += copy_from_mem(ptr, &theta, sizeof(theta));
   vector_u64<A> keys(table_size);
-  ptr += copy_from_mem(ptr, keys.data(), sizeof(uint64_t) * table_size);
+  ptr += copy_from_mem(ptr, keys.data(), sizeof(std::pair<uint64_t,uint64_t>) * table_size);
   const bool is_empty = flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size, lg_nom_size, std::move(keys), num_keys, rf, p, seed);
 }
@@ -669,6 +678,7 @@ string<A> compact_theta_sketch_dup_alloc<A>::to_string(bool print_items) const {
 
 template<typename A>
 void compact_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
+
   const bool is_single_item = keys_.size() == 1 && !this->is_estimation_mode();
   const uint8_t preamble_longs = this->is_empty() || is_single_item ? 1 : this->is_estimation_mode() ? 3 : 2;
   os.write((char*)&preamble_longs, sizeof(preamble_longs));
@@ -832,7 +842,7 @@ compact_theta_sketch_dup_alloc<A> compact_theta_sketch_dup_alloc<A>::internal_de
       }
     }
   }
-  const size_t keys_size_bytes = sizeof(uint64_t) * num_keys;
+  const size_t keys_size_bytes = sizeof(std::pair<uint64_t,uint64_t>) * num_keys;
   check_memory_size(ptr - base + keys_size_bytes, size);
   vector_u64<A> keys(num_keys);
   if (!is_empty) ptr += copy_from_mem(ptr, keys.data(), keys_size_bytes);
@@ -1025,9 +1035,7 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_remove(uint64_t hash, std:
   const uint32_t loop_index = cur_probe;
   do {
     const uint64_t value = table[cur_probe].first;
-    if (value == 0) {
-      return false;
-    } else if (value == hash) {
+    if (value == hash) {
       table[cur_probe].second--;
       if (table[cur_probe].second==0) {
         table[cur_probe].first=0;

@@ -420,6 +420,8 @@ public:
    */
   static update_theta_sketch_dup_alloc<A> deserialize(const void* bytes, size_t size, uint64_t seed = DEFAULT_SEED);
 
+  void output_keys();
+
 private:
   // resize threshold = 0.5 tuned for speed
   static constexpr double RESIZE_THRESHOLD = 0.5;
