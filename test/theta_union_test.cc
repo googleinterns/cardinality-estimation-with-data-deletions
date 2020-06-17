@@ -17,9 +17,6 @@ TEST(Union, EXACT) {
     u.update(a);
     u.update(b);
     compact_theta_sketch result = u.get_result();
-    // std::cout << a.to_string() << b.to_string();
-    // std::cout << result.to_string();
-    std::cout << "cardinality of a union b: " << result.get_estimate() << std::endl;
     ASSERT_FALSE(result.is_empty());
     ASSERT_FALSE(result.is_estimation_mode());
     ASSERT_EQ(result.get_estimate(),12000);
@@ -36,9 +33,6 @@ TEST(Union, ESTIMATION) {
     u.update(a);
     u.update(b);
     compact_theta_sketch result = u.get_result();
-    // std::cout << a.to_string() << b.to_string();
-    // std::cout << result.to_string();
-    std::cout << "cardinality of a union b: " << result.get_estimate() << std::endl;
     ASSERT_FALSE(result.is_empty());
     ASSERT_TRUE(result.is_estimation_mode());
     ASSERT_NEAR(result.get_estimate(),12000,200);

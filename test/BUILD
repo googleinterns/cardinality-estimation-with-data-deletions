@@ -12,6 +12,7 @@ cc_test(
     deps = [
         "//third_party/incubator-datasketches-cpp:theta",
         "//theta_dup:theta_dup",
+        "//utils:utils",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

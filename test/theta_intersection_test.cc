@@ -17,9 +17,6 @@ TEST(INTERSECTION, EXACT) {
     inter.update(a);
     inter.update(b);
     compact_theta_sketch result = inter.get_result();
-    // std::cout << a.to_string() << b.to_string();
-    // std::cout << result.to_string();
-    std::cout << "cardinality of a intersect b: " << result.get_estimate() << std::endl;
     ASSERT_FALSE(result.is_empty());
     ASSERT_FALSE(result.is_estimation_mode());
     ASSERT_EQ(result.get_estimate(),8000);
@@ -36,9 +33,6 @@ TEST(INTERSECTION, ESTIMATION) {
     inter.update(a);
     inter.update(b);
     compact_theta_sketch result = inter.get_result();
-    // std::cout << a.to_string() << b.to_string();
-    // std::cout << result.to_string();
-    std::cout << "cardinality of a intersect b: " << result.get_estimate() << std::endl;
     ASSERT_FALSE(result.is_empty());
     ASSERT_TRUE(result.is_estimation_mode());
     ASSERT_NEAR(result.get_estimate(),8000,200);

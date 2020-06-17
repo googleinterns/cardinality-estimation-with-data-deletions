@@ -32,9 +32,8 @@
 namespace datasketches {
 
 /*
- * author Alexander Saydakov
- * author Lee Rhodes
- * author Kevin Lang
+ * theta_sketch_dup is modified from theta_sketch of https://github.com/apache/incubator-datasketches-cpp/tree/master/theta
+ * compared with theta_sketch, theta_sketch_dup enables processing duplicate elements as well as deleting elements
  */
 
 // forward-declarations
