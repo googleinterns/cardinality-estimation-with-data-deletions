@@ -23,12 +23,12 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstring>
 #include <functional>
 #include <istream>
 #include <memory>
 #include <ostream>
 #include <sstream>
-#include <cstring>
 #include <vector>
 
 #include "utils.h"
@@ -892,8 +892,9 @@ theta_sketch_dup_alloc<A>::deserialize(const void* bytes, size_t size,
 }
 
 template <typename A>
-bool theta_sketch_dup_alloc<A>::isEqual(const theta_sketch_dup_alloc<A>& r) const {
-  return this->theta_==r.theta_;
+bool theta_sketch_dup_alloc<A>::isEqual(
+    const theta_sketch_dup_alloc<A>& r) const {
+  return this->theta_ == r.theta_ && this->is_empty_ == r.is_empty_;
 }
 
 template <typename A>
@@ -1149,11 +1150,6 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
 }
 
 template <typename A>
-bool update_theta_sketch_dup_alloc<A>::isEqual(const update_theta_sketch_dup_alloc<A>& r) const {
-  return this->theta_==r.theta_;
-}
-
-template <typename A>
 update_theta_sketch_dup_alloc<A>
 update_theta_sketch_dup_alloc<A>::internal_deserialize(
     const void* bytes, size_t size, resize_factor rf, uint8_t lg_cur_size,
@@ -1175,6 +1171,21 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
                                           lg_nom_size, std::move(keys),
                                           num_keys, rf, p, seed);
+}
+
+template <typename A>
+bool update_theta_sketch_dup_alloc<A>::isEqual(
+    const update_theta_sketch_dup_alloc<A>& r) const {
+  if (!theta_sketch_dup_alloc<A>::isEqual(r)) return false;
+  if (this->lg_cur_size_ != r.lg_cur_size_) return false;
+  if (this->lg_nom_size_ != r.lg_nom_size_) return false;
+  for (unsigned int i = 0; i < this->num_keys_; i++)
+    if (this->keys_[i] != r.keys_[i]) return false;
+  if (this->num_keys_ != r.num_keys_) return false;
+  if (this->rf_ != r.rf_) return false;
+  if (this->p_ != r.p_) return false;
+  if (this->seed_ != r.seed_) return false;
+  return true;
 }
 
 template <typename A>
@@ -1567,11 +1578,6 @@ compact_theta_sketch_dup_alloc<A>::deserialize(std::istream& is,
 }
 
 template <typename A>
-bool compact_theta_sketch_dup_alloc<A>::isEqual(const compact_theta_sketch_dup_alloc<A>& r) const {
-  return this->theta_==r.theta_;
-}
-
-template <typename A>
 compact_theta_sketch_dup_alloc<A>
 compact_theta_sketch_dup_alloc<A>::internal_deserialize(std::istream& is,
                                                         uint8_t preamble_longs,
@@ -1674,6 +1680,17 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(const void* bytes,
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED);
   return compact_theta_sketch_dup_alloc<A>(is_empty, theta, std::move(keys),
                                            seed_hash, is_ordered);
+}
+
+template <typename A>
+bool compact_theta_sketch_dup_alloc<A>::isEqual(
+    const compact_theta_sketch_dup_alloc<A>& r) const {
+  if (!theta_sketch_dup_alloc<A>::isEqual(r)) return false;
+  for (unsigned int i = 0; i < this->keys.size(); i++)
+    if (this->keys_[i] != r.keys_[i]) return false;
+  if (this->seed_hash_ != r.seed_hash_) return false;
+  if (this->is_ordered_ != r.is_ordered_) return false;
+  return true;
 }
 
 template <typename A>
@@ -1927,18 +1944,21 @@ constexpr uint8_t lg_size_from_count(uint32_t n, double load_factor) {
 }
 
 // overlad ==
-template<typename A>
-bool operator==(theta_sketch_dup_alloc<A> const& l, theta_sketch_dup_alloc<A> const& r) {
+template <typename A>
+bool operator==(theta_sketch_dup_alloc<A> const& l,
+                theta_sketch_dup_alloc<A> const& r) {
   return l.isEqual(r);
 }
 
-template<typename A>
-bool operator==(update_theta_sketch_dup_alloc<A> const& l, update_theta_sketch_dup_alloc<A> const& r) {
+template <typename A>
+bool operator==(update_theta_sketch_dup_alloc<A> const& l,
+                update_theta_sketch_dup_alloc<A> const& r) {
   return l.isEqual(r);
 }
 
-template<typename A>
-bool operator==(compact_theta_sketch_dup_alloc<A> const& l, compact_theta_sketch_dup_alloc<A> const& r) {
+template <typename A>
+bool operator==(compact_theta_sketch_dup_alloc<A> const& l,
+                compact_theta_sketch_dup_alloc<A> const& r) {
   return l.isEqual(r);
 }
 
