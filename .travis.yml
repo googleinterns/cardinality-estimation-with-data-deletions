@@ -1,0 +1,16 @@
+dist: trusty
+sudo: required
+language: 
+  - cpp
+compiler:
+  - g++
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++
+      - bazel
+
+script:
+  bazel test //:theta_test
