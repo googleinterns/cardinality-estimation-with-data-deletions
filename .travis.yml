@@ -4,18 +4,15 @@ language:
   - cpp
 compiler:
   - g++
-before_install:
-  - sudo apt update
-  - sudo apt install -y curl gnupg
-  - curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
-  - echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - sourceline: 'deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8'
+        key_url: 'https://bazel.build/bazel-release.pub.gpg'
     packages:
       - g++
       - bazel
 
 script:
-  bazel test //test:theta_test
+  - bazel test //test:theta_test
