@@ -13,4 +13,4 @@ addons:
       - bazel
 
 script:
-  bazel test //:theta_test
+  bazel build //test:theta_test
