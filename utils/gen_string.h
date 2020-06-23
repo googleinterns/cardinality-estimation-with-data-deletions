@@ -36,7 +36,7 @@ class gen_string {
    * @max_len=max_len0
    * @pool is set to be {'0',...,'9','A',...,'Z','a',...,'z'}
    */
-  gen_string(const int& seed0, const int& min_len0, const int& max_len0)
+  gen_string(int seed0, int min_len0, int max_len0)
       : seed(seed0), min_len(min_len0), max_len(max_len0) {
     gen.seed(seed);
     generate_pool();
@@ -51,7 +51,7 @@ class gen_string {
    * @max_len=max_len0
    * @pool=pool0
    */
-  gen_string(const int& seed0, const int& min_len0, const int& max_len0,
+  gen_string(int seed0, int min_len0, int max_len0,
              const std::vector<char>& pool0)
       : seed(seed0), min_len(min_len0), max_len(max_len0), pool(pool0) {
     gen.seed(seed);
