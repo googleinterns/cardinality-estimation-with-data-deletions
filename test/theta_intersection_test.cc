@@ -1,12 +1,9 @@
 #include "theta_intersection.hpp"
 #include <gtest/gtest.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
 
 namespace datasketches {
 
-TEST(INTERSECTION, EXACT) {
+TEST(Intersection, Exact) {
   theta_intersection inter;
   auto a = update_theta_sketch::builder().set_lg_k(15).build();
   auto b = update_theta_sketch::builder().set_lg_k(15).build();
@@ -20,7 +17,7 @@ TEST(INTERSECTION, EXACT) {
   ASSERT_EQ(result.get_estimate(), 8000);
 }
 
-TEST(INTERSECTION, ESTIMATION) {
+TEST(Intersection, Estimation) {
   theta_intersection inter;
   auto a = update_theta_sketch::builder().set_lg_k(12).build();
   auto b = update_theta_sketch::builder().set_lg_k(12).build();
@@ -31,7 +28,7 @@ TEST(INTERSECTION, ESTIMATION) {
   compact_theta_sketch result = inter.get_result();
   ASSERT_FALSE(result.is_empty());
   ASSERT_TRUE(result.is_estimation_mode());
-  ASSERT_NEAR(result.get_estimate(), 8000, 200);
+  EXPECT_NEAR(result.get_estimate(), 8000, 200);
 }
 
 }  // namespace datasketches

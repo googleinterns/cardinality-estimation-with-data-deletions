@@ -6,7 +6,7 @@
 
 namespace datasketches {
 
-TEST(Union, EXACT) {
+TEST(Union, Exact) {
   theta_union u = theta_union::builder().set_lg_k(15).build();
   auto a = update_theta_sketch::builder().set_lg_k(15).build();
   auto b = update_theta_sketch::builder().set_lg_k(15).build();
@@ -20,7 +20,7 @@ TEST(Union, EXACT) {
   ASSERT_EQ(result.get_estimate(), 12000);
 }
 
-TEST(Union, ESTIMATION) {
+TEST(Union, Estimation) {
   theta_union u = theta_union::builder().build();
   auto a = update_theta_sketch::builder().set_lg_k(12).build();
   auto b = update_theta_sketch::builder().set_lg_k(12).build();
@@ -31,7 +31,7 @@ TEST(Union, ESTIMATION) {
   compact_theta_sketch result = u.get_result();
   ASSERT_FALSE(result.is_empty());
   ASSERT_TRUE(result.is_estimation_mode());
-  ASSERT_NEAR(result.get_estimate(), 12000, 200);
+  EXPECT_NEAR(result.get_estimate(), 12000, 200);
 }
 
 }  // namespace datasketches
