@@ -862,14 +862,15 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
 
 template <typename A>
 typename theta_sketch_dup_alloc<A>::unique_ptr
-theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
-  uint8_t preamble_longs=pb.preamble_longs();
-  uint8_t serial_version=pb.serial_version();
-  uint8_t type=pb.sketch_type();
-  uint8_t lg_nom_size=pb.lg_nom_size();
-  uint8_t lg_cur_size=pb.lg_cur_size();
-  uint8_t flags_byte=pb.flags_byte();
-  uint16_t seed_hash=pb.seed_hash();
+theta_sketch_dup_alloc<A>::deserialize(
+    datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
+  uint8_t preamble_longs = pb.preamble_longs();
+  uint8_t serial_version = pb.serial_version();
+  uint8_t type = pb.sketch_type();
+  uint8_t lg_nom_size = pb.lg_nom_size();
+  uint8_t lg_cur_size = pb.lg_cur_size();
+  uint8_t flags_byte = pb.flags_byte();
+  uint16_t seed_hash = pb.seed_hash();
 
   check_serial_version(serial_version, SERIAL_VERSION);
   check_seed_hash(seed_hash, get_seed_hash(seed));
@@ -1155,6 +1156,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(
   pb->set_preamble_longs(3);
   pb->set_serial_version(theta_sketch_dup_alloc<A>::SERIAL_VERSION);
   pb->set_sketch_type(SKETCH_TYPE);
+  // pb->set_rf(3 | (rf_ << 6));
   pb->set_rf(rf_);
   pb->set_lg_nom_size(lg_nom_size_);
   pb->set_lg_cur_size(lg_cur_size_);
@@ -1166,7 +1168,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(
   pb->set_p(p_);
   pb->set_theta(this->theta_);
 
-  for (auto key:keys_) {
+  for (auto key : keys_) {
     auto* hash_pair = pb->add_keys();
     hash_pair->set_hash_val(key.first);
     hash_pair->set_cnt(key.second);
@@ -1190,7 +1192,8 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
   is.read((char*)&lg_cur_size, sizeof(lg_cur_size));
   uint8_t flags_byte;
   is.read((char*)&flags_byte, sizeof(flags_byte));
-  uint16_t seed_hash;;
+  uint16_t seed_hash;
+  ;
   is.read((char*)&seed_hash, sizeof(seed_hash));
   theta_sketch_dup_alloc<A>::check_sketch_type(type, SKETCH_TYPE);
   theta_sketch_dup_alloc<A>::check_serial_version(
@@ -1226,9 +1229,11 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
 template <typename A>
 update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
     datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
-  uint8_t serial_version=pb.serial_version();
+  uint8_t preamble_longs = pb.preamble_longs();
+  uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
-  resize_factor rf = pb.rf();
+  // resize_factor rf = static_cast<resize_factor>(preamble_longs >> 6);
+  resize_factor rf = static_cast<resize_factor>(pb.rf());
   uint8_t lg_nom_size = pb.lg_nom_size();
   uint8_t lg_cur_size = pb.lg_cur_size();
   uint8_t flags_byte = pb.flags_byte();
