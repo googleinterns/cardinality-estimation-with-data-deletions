@@ -1,7 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_test(
-    name = "test_theta_dup",
+    name = "theta_sketch_dup",
     srcs = glob(["theta_sketch_dup_test.cc"]),
     copts = [
         "-Ithird_party/incubator-datasketches-cpp/theta",
@@ -19,7 +19,7 @@ cc_test(
 )
 
 cc_test(
-    name = "test_theta_sketch_set_operations",
+    name = "theta_sketch_set",
     srcs = glob(["theta_a_not_b_test.cc", "theta_intersection_test.cc", "theta_union_test.cc"]),
     copts = [
         "-Ithird_party/incubator-datasketches-cpp/theta",

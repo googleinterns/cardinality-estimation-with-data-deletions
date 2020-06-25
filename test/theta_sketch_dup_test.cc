@@ -14,10 +14,22 @@ TEST(ThetaSketchDup, TestSerializeDeterminedCaseWithoutEstimation) {
   // instead to estimated
   auto a = update_theta_sketch_dup::builder().set_lg_k(5).build();
   for (int i = 0; i < 20; i++) a.update(i);
+  
+  // serialize using proto
+  // a and b should be the same before/after the serialization
+  datasketches_pb::Update_theta_sketch_dup serialized_proto;
+  a.serialize(&serialized_proto);
+  auto b = update_theta_sketch_dup::deserialize(serialized_proto);
+  ASSERT_EQ(a, b);
+
+  // serialize using bytes
+  // a and b should be the same before/after the serialization
   auto serialized_bytes = a.serialize();
-  auto b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
-                                                serialized_bytes.size());
-  ASSERT_EQ(a.get_estimate(), b.get_estimate());
+  b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
+                                           serialized_bytes.size());
+  ASSERT_EQ(a, b);
+
+  // remove 10 elements, the sketch has 10 remaining elements
   for (int i = 0; i < 10; i++) {
     b.remove(i);
   }
@@ -31,10 +43,19 @@ TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
   // storage size, so the cardinality is estimated instead of exact
   auto a = update_theta_sketch_dup::builder().set_lg_k(10).build();
   for (int i = 0; i < 10000; i++) a.update(i);
-  auto serialized_bytes = a.serialize();
-  auto b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
-                                                serialized_bytes.size());
+  
+  // serialize using proto
   // a and b should be the same before/after the serialization
+  datasketches_pb::Update_theta_sketch_dup serialized_proto;
+  a.serialize(&serialized_proto);
+  auto b = update_theta_sketch_dup::deserialize(serialized_proto);
+  ASSERT_EQ(a, b);
+
+  // serialize using bytes
+  // a and b should be the same before/after the serialization
+  auto serialized_bytes = a.serialize();
+  b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
+                                                serialized_bytes.size());
   ASSERT_EQ(a, b);
 }
 
