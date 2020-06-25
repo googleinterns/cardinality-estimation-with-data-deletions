@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package datasketches_pb;
+
+message Update_theta_sketch_dup {
+  uint32 serial_version = 1;
+  uint32 sketch_type = 2;
+  uint32 rf = 3;
+  uint32 lg_nom_size = 4;
+  uint32 lg_cur_size = 5;
+  uint32 flags_byte = 6;
+  uint32 seed_hash = 7;
+  uint32 num_keys = 8;
+  double p = 9;
+  uint64 theta = 10;
+
+  message hash_map_count {
+    uint64 hash_val = 1; 
+    uint64 cnt = 2;
+  }
+
+  repeated hash_map_count keys = 11;
+
+  uint32 preamble_longs = 12;
+}
