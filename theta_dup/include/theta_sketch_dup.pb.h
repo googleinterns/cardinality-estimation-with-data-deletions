@@ -333,20 +333,20 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kKeysFieldNumber = 11,
-    kSerialVersionFieldNumber = 1,
-    kSketchTypeFieldNumber = 2,
-    kRfFieldNumber = 3,
-    kLgNomSizeFieldNumber = 4,
-    kLgCurSizeFieldNumber = 5,
-    kFlagsByteFieldNumber = 6,
-    kSeedHashFieldNumber = 7,
-    kNumKeysFieldNumber = 8,
-    kPFieldNumber = 9,
-    kThetaFieldNumber = 10,
-    kPreambleLongsFieldNumber = 12,
+    kKeysFieldNumber = 12,
+    kPreambleLongsFieldNumber = 1,
+    kSerialVersionFieldNumber = 2,
+    kSketchTypeFieldNumber = 3,
+    kRfFieldNumber = 4,
+    kLgNomSizeFieldNumber = 5,
+    kLgCurSizeFieldNumber = 6,
+    kFlagsByteFieldNumber = 7,
+    kSeedHashFieldNumber = 8,
+    kPFieldNumber = 10,
+    kThetaFieldNumber = 11,
+    kNumKeysFieldNumber = 9,
   };
-  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 11;
+  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 12;
   int keys_size() const;
   private:
   int _internal_keys_size() const;
@@ -364,7 +364,16 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::datasketches_pb::Update_theta_sketch_dup_hash_map_count >&
       keys() const;
 
-  // uint32 serial_version = 1;
+  // uint32 preamble_longs = 1;
+  void clear_preamble_longs();
+  ::PROTOBUF_NAMESPACE_ID::uint32 preamble_longs() const;
+  void set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_preamble_longs() const;
+  void _internal_set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 serial_version = 2;
   void clear_serial_version();
   ::PROTOBUF_NAMESPACE_ID::uint32 serial_version() const;
   void set_serial_version(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -373,7 +382,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_serial_version(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 sketch_type = 2;
+  // uint32 sketch_type = 3;
   void clear_sketch_type();
   ::PROTOBUF_NAMESPACE_ID::uint32 sketch_type() const;
   void set_sketch_type(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -382,7 +391,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_sketch_type(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 rf = 3;
+  // uint32 rf = 4;
   void clear_rf();
   ::PROTOBUF_NAMESPACE_ID::uint32 rf() const;
   void set_rf(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -391,7 +400,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_rf(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 lg_nom_size = 4;
+  // uint32 lg_nom_size = 5;
   void clear_lg_nom_size();
   ::PROTOBUF_NAMESPACE_ID::uint32 lg_nom_size() const;
   void set_lg_nom_size(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -400,7 +409,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_lg_nom_size(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 lg_cur_size = 5;
+  // uint32 lg_cur_size = 6;
   void clear_lg_cur_size();
   ::PROTOBUF_NAMESPACE_ID::uint32 lg_cur_size() const;
   void set_lg_cur_size(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -409,7 +418,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_lg_cur_size(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 flags_byte = 6;
+  // uint32 flags_byte = 7;
   void clear_flags_byte();
   ::PROTOBUF_NAMESPACE_ID::uint32 flags_byte() const;
   void set_flags_byte(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -418,7 +427,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_flags_byte(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 seed_hash = 7;
+  // uint32 seed_hash = 8;
   void clear_seed_hash();
   ::PROTOBUF_NAMESPACE_ID::uint32 seed_hash() const;
   void set_seed_hash(::PROTOBUF_NAMESPACE_ID::uint32 value);
@@ -427,16 +436,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_seed_hash(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // uint32 num_keys = 8;
-  void clear_num_keys();
-  ::PROTOBUF_NAMESPACE_ID::uint32 num_keys() const;
-  void set_num_keys(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_num_keys() const;
-  void _internal_set_num_keys(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // double p = 9;
+  // double p = 10;
   void clear_p();
   double p() const;
   void set_p(double value);
@@ -445,7 +445,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_p(double value);
   public:
 
-  // uint64 theta = 10;
+  // uint64 theta = 11;
   void clear_theta();
   ::PROTOBUF_NAMESPACE_ID::uint64 theta() const;
   void set_theta(::PROTOBUF_NAMESPACE_ID::uint64 value);
@@ -454,13 +454,13 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   void _internal_set_theta(::PROTOBUF_NAMESPACE_ID::uint64 value);
   public:
 
-  // uint32 preamble_longs = 12;
-  void clear_preamble_longs();
-  ::PROTOBUF_NAMESPACE_ID::uint32 preamble_longs() const;
-  void set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  // uint32 num_keys = 9;
+  void clear_num_keys();
+  ::PROTOBUF_NAMESPACE_ID::uint32 num_keys() const;
+  void set_num_keys(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_preamble_longs() const;
-  void _internal_set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_num_keys() const;
+  void _internal_set_num_keys(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:datasketches_pb.Update_theta_sketch_dup)
@@ -471,6 +471,7 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::datasketches_pb::Update_theta_sketch_dup_hash_map_count > keys_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 preamble_longs_;
   ::PROTOBUF_NAMESPACE_ID::uint32 serial_version_;
   ::PROTOBUF_NAMESPACE_ID::uint32 sketch_type_;
   ::PROTOBUF_NAMESPACE_ID::uint32 rf_;
@@ -478,10 +479,9 @@ class Update_theta_sketch_dup PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::uint32 lg_cur_size_;
   ::PROTOBUF_NAMESPACE_ID::uint32 flags_byte_;
   ::PROTOBUF_NAMESPACE_ID::uint32 seed_hash_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 num_keys_;
   double p_;
   ::PROTOBUF_NAMESPACE_ID::uint64 theta_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 preamble_longs_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 num_keys_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_theta_5fsketch_5fdup_2eproto;
 };
@@ -540,7 +540,27 @@ inline void Update_theta_sketch_dup_hash_map_count::set_cnt(::PROTOBUF_NAMESPACE
 
 // Update_theta_sketch_dup
 
-// uint32 serial_version = 1;
+// uint32 preamble_longs = 1;
+inline void Update_theta_sketch_dup::clear_preamble_longs() {
+  preamble_longs_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Update_theta_sketch_dup::_internal_preamble_longs() const {
+  return preamble_longs_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Update_theta_sketch_dup::preamble_longs() const {
+  // @@protoc_insertion_point(field_get:datasketches_pb.Update_theta_sketch_dup.preamble_longs)
+  return _internal_preamble_longs();
+}
+inline void Update_theta_sketch_dup::_internal_set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  preamble_longs_ = value;
+}
+inline void Update_theta_sketch_dup::set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_preamble_longs(value);
+  // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.preamble_longs)
+}
+
+// uint32 serial_version = 2;
 inline void Update_theta_sketch_dup::clear_serial_version() {
   serial_version_ = 0u;
 }
@@ -560,7 +580,7 @@ inline void Update_theta_sketch_dup::set_serial_version(::PROTOBUF_NAMESPACE_ID:
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.serial_version)
 }
 
-// uint32 sketch_type = 2;
+// uint32 sketch_type = 3;
 inline void Update_theta_sketch_dup::clear_sketch_type() {
   sketch_type_ = 0u;
 }
@@ -580,7 +600,7 @@ inline void Update_theta_sketch_dup::set_sketch_type(::PROTOBUF_NAMESPACE_ID::ui
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.sketch_type)
 }
 
-// uint32 rf = 3;
+// uint32 rf = 4;
 inline void Update_theta_sketch_dup::clear_rf() {
   rf_ = 0u;
 }
@@ -600,7 +620,7 @@ inline void Update_theta_sketch_dup::set_rf(::PROTOBUF_NAMESPACE_ID::uint32 valu
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.rf)
 }
 
-// uint32 lg_nom_size = 4;
+// uint32 lg_nom_size = 5;
 inline void Update_theta_sketch_dup::clear_lg_nom_size() {
   lg_nom_size_ = 0u;
 }
@@ -620,7 +640,7 @@ inline void Update_theta_sketch_dup::set_lg_nom_size(::PROTOBUF_NAMESPACE_ID::ui
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.lg_nom_size)
 }
 
-// uint32 lg_cur_size = 5;
+// uint32 lg_cur_size = 6;
 inline void Update_theta_sketch_dup::clear_lg_cur_size() {
   lg_cur_size_ = 0u;
 }
@@ -640,7 +660,7 @@ inline void Update_theta_sketch_dup::set_lg_cur_size(::PROTOBUF_NAMESPACE_ID::ui
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.lg_cur_size)
 }
 
-// uint32 flags_byte = 6;
+// uint32 flags_byte = 7;
 inline void Update_theta_sketch_dup::clear_flags_byte() {
   flags_byte_ = 0u;
 }
@@ -660,7 +680,7 @@ inline void Update_theta_sketch_dup::set_flags_byte(::PROTOBUF_NAMESPACE_ID::uin
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.flags_byte)
 }
 
-// uint32 seed_hash = 7;
+// uint32 seed_hash = 8;
 inline void Update_theta_sketch_dup::clear_seed_hash() {
   seed_hash_ = 0u;
 }
@@ -680,7 +700,7 @@ inline void Update_theta_sketch_dup::set_seed_hash(::PROTOBUF_NAMESPACE_ID::uint
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.seed_hash)
 }
 
-// uint32 num_keys = 8;
+// uint32 num_keys = 9;
 inline void Update_theta_sketch_dup::clear_num_keys() {
   num_keys_ = 0u;
 }
@@ -700,7 +720,7 @@ inline void Update_theta_sketch_dup::set_num_keys(::PROTOBUF_NAMESPACE_ID::uint3
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.num_keys)
 }
 
-// double p = 9;
+// double p = 10;
 inline void Update_theta_sketch_dup::clear_p() {
   p_ = 0;
 }
@@ -720,7 +740,7 @@ inline void Update_theta_sketch_dup::set_p(double value) {
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.p)
 }
 
-// uint64 theta = 10;
+// uint64 theta = 11;
 inline void Update_theta_sketch_dup::clear_theta() {
   theta_ = PROTOBUF_ULONGLONG(0);
 }
@@ -740,7 +760,7 @@ inline void Update_theta_sketch_dup::set_theta(::PROTOBUF_NAMESPACE_ID::uint64 v
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.theta)
 }
 
-// repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 11;
+// repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 12;
 inline int Update_theta_sketch_dup::_internal_keys_size() const {
   return keys_.size();
 }
@@ -777,26 +797,6 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::datasketches_pb::Updat
 Update_theta_sketch_dup::keys() const {
   // @@protoc_insertion_point(field_list:datasketches_pb.Update_theta_sketch_dup.keys)
   return keys_;
-}
-
-// uint32 preamble_longs = 12;
-inline void Update_theta_sketch_dup::clear_preamble_longs() {
-  preamble_longs_ = 0u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Update_theta_sketch_dup::_internal_preamble_longs() const {
-  return preamble_longs_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Update_theta_sketch_dup::preamble_longs() const {
-  // @@protoc_insertion_point(field_get:datasketches_pb.Update_theta_sketch_dup.preamble_longs)
-  return _internal_preamble_longs();
-}
-inline void Update_theta_sketch_dup::_internal_set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  
-  preamble_longs_ = value;
-}
-inline void Update_theta_sketch_dup::set_preamble_longs(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_preamble_longs(value);
-  // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.preamble_longs)
 }
 
 #ifdef __GNUC__

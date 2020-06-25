@@ -71,6 +71,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_theta_5fsketch_5fdup_2eproto::
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, preamble_longs_),
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, serial_version_),
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, sketch_type_),
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, rf_),
@@ -82,7 +83,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_theta_5fsketch_5fdup_2eproto::
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, p_),
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, theta_),
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, keys_),
-  PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, preamble_longs_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::datasketches_pb::Update_theta_sketch_dup_hash_map_count)},
@@ -96,14 +96,14 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_theta_5fsketch_5fdup_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\026theta_sketch_dup.proto\022\017datasketches_p"
-  "b\"\337\002\n\027Update_theta_sketch_dup\022\026\n\016serial_"
-  "version\030\001 \001(\r\022\023\n\013sketch_type\030\002 \001(\r\022\n\n\002rf"
-  "\030\003 \001(\r\022\023\n\013lg_nom_size\030\004 \001(\r\022\023\n\013lg_cur_si"
-  "ze\030\005 \001(\r\022\022\n\nflags_byte\030\006 \001(\r\022\021\n\tseed_has"
-  "h\030\007 \001(\r\022\020\n\010num_keys\030\010 \001(\r\022\t\n\001p\030\t \001(\001\022\r\n\005"
-  "theta\030\n \001(\004\022E\n\004keys\030\013 \003(\01327.datasketches"
-  "_pb.Update_theta_sketch_dup.hash_map_cou"
-  "nt\022\026\n\016preamble_longs\030\014 \001(\r\032/\n\016hash_map_c"
+  "b\"\337\002\n\027Update_theta_sketch_dup\022\026\n\016preambl"
+  "e_longs\030\001 \001(\r\022\026\n\016serial_version\030\002 \001(\r\022\023\n"
+  "\013sketch_type\030\003 \001(\r\022\n\n\002rf\030\004 \001(\r\022\023\n\013lg_nom"
+  "_size\030\005 \001(\r\022\023\n\013lg_cur_size\030\006 \001(\r\022\022\n\nflag"
+  "s_byte\030\007 \001(\r\022\021\n\tseed_hash\030\010 \001(\r\022\020\n\010num_k"
+  "eys\030\t \001(\r\022\t\n\001p\030\n \001(\001\022\r\n\005theta\030\013 \001(\004\022E\n\004k"
+  "eys\030\014 \003(\01327.datasketches_pb.Update_theta"
+  "_sketch_dup.hash_map_count\032/\n\016hash_map_c"
   "ount\022\020\n\010hash_val\030\001 \001(\004\022\013\n\003cnt\030\002 \001(\004b\006pro"
   "to3"
   ;
@@ -375,17 +375,17 @@ Update_theta_sketch_dup::Update_theta_sketch_dup(const Update_theta_sketch_dup& 
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       keys_(from.keys_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&serial_version_, &from.serial_version_,
-    static_cast<size_t>(reinterpret_cast<char*>(&preamble_longs_) -
-    reinterpret_cast<char*>(&serial_version_)) + sizeof(preamble_longs_));
+  ::memcpy(&preamble_longs_, &from.preamble_longs_,
+    static_cast<size_t>(reinterpret_cast<char*>(&num_keys_) -
+    reinterpret_cast<char*>(&preamble_longs_)) + sizeof(num_keys_));
   // @@protoc_insertion_point(copy_constructor:datasketches_pb.Update_theta_sketch_dup)
 }
 
 void Update_theta_sketch_dup::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Update_theta_sketch_dup_theta_5fsketch_5fdup_2eproto.base);
-  ::memset(&serial_version_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&preamble_longs_) -
-      reinterpret_cast<char*>(&serial_version_)) + sizeof(preamble_longs_));
+  ::memset(&preamble_longs_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&num_keys_) -
+      reinterpret_cast<char*>(&preamble_longs_)) + sizeof(num_keys_));
 }
 
 Update_theta_sketch_dup::~Update_theta_sketch_dup() {
@@ -420,9 +420,9 @@ void Update_theta_sketch_dup::Clear() {
   (void) cached_has_bits;
 
   keys_.Clear();
-  ::memset(&serial_version_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&preamble_longs_) -
-      reinterpret_cast<char*>(&serial_version_)) + sizeof(preamble_longs_));
+  ::memset(&preamble_longs_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&num_keys_) -
+      reinterpret_cast<char*>(&preamble_longs_)) + sizeof(num_keys_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -434,93 +434,93 @@ const char* Update_theta_sketch_dup::_InternalParse(const char* ptr, ::PROTOBUF_
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // uint32 serial_version = 1;
+      // uint32 preamble_longs = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          preamble_longs_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 serial_version = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
           serial_version_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 sketch_type = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+      // uint32 sketch_type = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           sketch_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 rf = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+      // uint32 rf = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           rf_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 lg_nom_size = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+      // uint32 lg_nom_size = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
           lg_nom_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 lg_cur_size = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+      // uint32 lg_cur_size = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
           lg_cur_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 flags_byte = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+      // uint32 flags_byte = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
           flags_byte_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 seed_hash = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+      // uint32 seed_hash = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
           seed_hash_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 num_keys = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+      // uint32 num_keys = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 72)) {
           num_keys_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // double p = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 73)) {
+      // double p = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 81)) {
           p_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
         } else goto handle_unusual;
         continue;
-      // uint64 theta = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 80)) {
+      // uint64 theta = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 88)) {
           theta_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 90)) {
+      // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 98)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_keys(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<90>(ptr));
-        } else goto handle_unusual;
-        continue;
-      // uint32 preamble_longs = 12;
-      case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 96)) {
-          preamble_longs_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<98>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -551,78 +551,78 @@ failure:
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint32 serial_version = 1;
+  // uint32 preamble_longs = 1;
+  if (this->preamble_longs() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_preamble_longs(), target);
+  }
+
+  // uint32 serial_version = 2;
   if (this->serial_version() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_serial_version(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_serial_version(), target);
   }
 
-  // uint32 sketch_type = 2;
+  // uint32 sketch_type = 3;
   if (this->sketch_type() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_sketch_type(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_sketch_type(), target);
   }
 
-  // uint32 rf = 3;
+  // uint32 rf = 4;
   if (this->rf() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_rf(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_rf(), target);
   }
 
-  // uint32 lg_nom_size = 4;
+  // uint32 lg_nom_size = 5;
   if (this->lg_nom_size() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_lg_nom_size(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_lg_nom_size(), target);
   }
 
-  // uint32 lg_cur_size = 5;
+  // uint32 lg_cur_size = 6;
   if (this->lg_cur_size() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_lg_cur_size(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_lg_cur_size(), target);
   }
 
-  // uint32 flags_byte = 6;
+  // uint32 flags_byte = 7;
   if (this->flags_byte() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_flags_byte(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->_internal_flags_byte(), target);
   }
 
-  // uint32 seed_hash = 7;
+  // uint32 seed_hash = 8;
   if (this->seed_hash() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->_internal_seed_hash(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->_internal_seed_hash(), target);
   }
 
-  // uint32 num_keys = 8;
+  // uint32 num_keys = 9;
   if (this->num_keys() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->_internal_num_keys(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(9, this->_internal_num_keys(), target);
   }
 
-  // double p = 9;
+  // double p = 10;
   if (!(this->p() <= 0 && this->p() >= 0)) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(9, this->_internal_p(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(10, this->_internal_p(), target);
   }
 
-  // uint64 theta = 10;
+  // uint64 theta = 11;
   if (this->theta() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(10, this->_internal_theta(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(11, this->_internal_theta(), target);
   }
 
-  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 11;
+  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 12;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_keys_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(11, this->_internal_keys(i), target, stream);
-  }
-
-  // uint32 preamble_longs = 12;
-  if (this->preamble_longs() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(12, this->_internal_preamble_longs(), target);
+      InternalWriteMessage(12, this->_internal_keys(i), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -641,86 +641,86 @@ size_t Update_theta_sketch_dup::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 11;
+  // repeated .datasketches_pb.Update_theta_sketch_dup.hash_map_count keys = 12;
   total_size += 1UL * this->_internal_keys_size();
   for (const auto& msg : this->keys_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // uint32 serial_version = 1;
+  // uint32 preamble_longs = 1;
+  if (this->preamble_longs() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_preamble_longs());
+  }
+
+  // uint32 serial_version = 2;
   if (this->serial_version() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_serial_version());
   }
 
-  // uint32 sketch_type = 2;
+  // uint32 sketch_type = 3;
   if (this->sketch_type() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_sketch_type());
   }
 
-  // uint32 rf = 3;
+  // uint32 rf = 4;
   if (this->rf() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_rf());
   }
 
-  // uint32 lg_nom_size = 4;
+  // uint32 lg_nom_size = 5;
   if (this->lg_nom_size() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_lg_nom_size());
   }
 
-  // uint32 lg_cur_size = 5;
+  // uint32 lg_cur_size = 6;
   if (this->lg_cur_size() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_lg_cur_size());
   }
 
-  // uint32 flags_byte = 6;
+  // uint32 flags_byte = 7;
   if (this->flags_byte() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_flags_byte());
   }
 
-  // uint32 seed_hash = 7;
+  // uint32 seed_hash = 8;
   if (this->seed_hash() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_seed_hash());
   }
 
-  // uint32 num_keys = 8;
-  if (this->num_keys() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_num_keys());
-  }
-
-  // double p = 9;
+  // double p = 10;
   if (!(this->p() <= 0 && this->p() >= 0)) {
     total_size += 1 + 8;
   }
 
-  // uint64 theta = 10;
+  // uint64 theta = 11;
   if (this->theta() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
         this->_internal_theta());
   }
 
-  // uint32 preamble_longs = 12;
-  if (this->preamble_longs() != 0) {
+  // uint32 num_keys = 9;
+  if (this->num_keys() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_preamble_longs());
+        this->_internal_num_keys());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -755,6 +755,9 @@ void Update_theta_sketch_dup::MergeFrom(const Update_theta_sketch_dup& from) {
   (void) cached_has_bits;
 
   keys_.MergeFrom(from.keys_);
+  if (from.preamble_longs() != 0) {
+    _internal_set_preamble_longs(from._internal_preamble_longs());
+  }
   if (from.serial_version() != 0) {
     _internal_set_serial_version(from._internal_serial_version());
   }
@@ -776,17 +779,14 @@ void Update_theta_sketch_dup::MergeFrom(const Update_theta_sketch_dup& from) {
   if (from.seed_hash() != 0) {
     _internal_set_seed_hash(from._internal_seed_hash());
   }
-  if (from.num_keys() != 0) {
-    _internal_set_num_keys(from._internal_num_keys());
-  }
   if (!(from.p() <= 0 && from.p() >= 0)) {
     _internal_set_p(from._internal_p());
   }
   if (from.theta() != 0) {
     _internal_set_theta(from._internal_theta());
   }
-  if (from.preamble_longs() != 0) {
-    _internal_set_preamble_longs(from._internal_preamble_longs());
+  if (from.num_keys() != 0) {
+    _internal_set_num_keys(from._internal_num_keys());
   }
 }
 
@@ -813,11 +813,11 @@ void Update_theta_sketch_dup::InternalSwap(Update_theta_sketch_dup* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   keys_.InternalSwap(&other->keys_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup, preamble_longs_)
-      + sizeof(Update_theta_sketch_dup::preamble_longs_)
-      - PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup, serial_version_)>(
-          reinterpret_cast<char*>(&serial_version_),
-          reinterpret_cast<char*>(&other->serial_version_));
+      PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup, num_keys_)
+      + sizeof(Update_theta_sketch_dup::num_keys_)
+      - PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup, preamble_longs_)>(
+          reinterpret_cast<char*>(&preamble_longs_),
+          reinterpret_cast<char*>(&other->preamble_longs_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Update_theta_sketch_dup::GetMetadata() const {

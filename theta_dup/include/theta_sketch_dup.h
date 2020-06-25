@@ -611,6 +611,7 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
   virtual bool is_ordered() const;
   virtual string<A> to_string(bool print_items = false) const;
   virtual void serialize(std::ostream& os) const;
+  virtual void serialize(datasketches_pb::Update_theta_sketch_dup* pb) const;
   typedef vector_u8<A> vector_bytes;  // alias for users
   // header space is reserved, but not initialized
   virtual vector_bytes serialize(unsigned header_size_bytes = 0) const;
@@ -627,6 +628,17 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    */
   static compact_theta_sketch_dup_alloc<A> deserialize(
       std::istream& is, uint64_t seed = DEFAULT_SEED);
+
+  /**
+   * This method deserializes a sketch from protobuf.
+   * @param pb input stream
+   * @param seed the seed for the hash function that was used to create the
+   * sketch
+   * @return an instance of a sketch
+   */
+  static compact_theta_sketch_dup_alloc<A> deserialize(
+      datasketches_pb::Update_theta_sketch_dup& pb,
+      uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a given array of bytes.
@@ -666,6 +678,9 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
                                  bool is_ordered);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
       std::istream& is, uint8_t preamble_longs, uint8_t flags_byte,
+      uint16_t seed_hash);
+  static compact_theta_sketch_dup_alloc<A> internal_deserialize(
+      datasketches_pb::Update_theta_sketch_dup& pb, uint8_t preamble_longs, uint8_t flags_byte,
       uint16_t seed_hash);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
       const void* bytes, size_t size, uint8_t preamble_longs,
@@ -864,7 +879,6 @@ template <typename A>
 typename theta_sketch_dup_alloc<A>::unique_ptr
 theta_sketch_dup_alloc<A>::deserialize(
     datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
-  uint8_t preamble_longs = pb.preamble_longs();
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
   uint8_t lg_nom_size = pb.lg_nom_size();
@@ -878,7 +892,7 @@ theta_sketch_dup_alloc<A>::deserialize(
   if (type == update_theta_sketch_dup_alloc<A>::SKETCH_TYPE) {
     typename update_theta_sketch_dup_alloc<A>::resize_factor rf =
         static_cast<typename update_theta_sketch_dup_alloc<A>::resize_factor>(
-            preamble_longs >> 6);
+            pb.rf());
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         update_theta_sketch_dup_alloc<A>>
         AU;
@@ -892,21 +906,22 @@ theta_sketch_dup_alloc<A>::deserialize(
           AU().deallocate(static_cast<update_theta_sketch_dup_alloc<A>*>(ptr),
                           1);
         });
-  } /* else if (type == compact_theta_sketch_dup_alloc<A>::SKETCH_TYPE) {
+  } else if (type == compact_theta_sketch_dup_alloc<A>::SKETCH_TYPE) {
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         compact_theta_sketch_dup_alloc<A>>
         AC;
+    uint8_t preamble_longs = pb.preamble_longs();
     return unique_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AC().allocate(1)) compact_theta_sketch_dup_alloc<A>(
                 compact_theta_sketch_dup_alloc<A>::internal_deserialize(
-                    is, preamble_longs, flags_byte, seed_hash))),
+                    pb, preamble_longs, flags_byte, seed_hash))),
         [](theta_sketch_dup_alloc<A>* ptr) {
           ptr->~theta_sketch_dup_alloc();
           AC().deallocate(static_cast<compact_theta_sketch_dup_alloc<A>*>(ptr),
                           1);
         });
-  } */
+  }
   throw std::invalid_argument("unsupported sketch type " +
                               std::to_string((int)type));
 }
@@ -1153,10 +1168,8 @@ vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
 template <typename A>
 void update_theta_sketch_dup_alloc<A>::serialize(
     datasketches_pb::Update_theta_sketch_dup* pb) const {
-  pb->set_preamble_longs(3);
   pb->set_serial_version(theta_sketch_dup_alloc<A>::SERIAL_VERSION);
   pb->set_sketch_type(SKETCH_TYPE);
-  // pb->set_rf(3 | (rf_ << 6));
   pb->set_rf(rf_);
   pb->set_lg_nom_size(lg_nom_size_);
   pb->set_lg_cur_size(lg_cur_size_);
@@ -1229,10 +1242,8 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
 template <typename A>
 update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
     datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
-  uint8_t preamble_longs = pb.preamble_longs();
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
-  // resize_factor rf = static_cast<resize_factor>(preamble_longs >> 6);
   resize_factor rf = static_cast<resize_factor>(pb.rf());
   uint8_t lg_nom_size = pb.lg_nom_size();
   uint8_t lg_cur_size = pb.lg_cur_size();
@@ -1657,6 +1668,40 @@ void compact_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
 }
 
 template <typename A>
+void compact_theta_sketch_dup_alloc<A>::serialize(
+    datasketches_pb::Update_theta_sketch_dup* pb) const {
+  const bool is_single_item = keys_.size() == 1 && !this->is_estimation_mode();
+  const uint8_t preamble_longs = this->is_empty() || is_single_item
+                                     ? 1
+                                     : this->is_estimation_mode() ? 3 : 2;
+  pb->set_preamble_longs(preamble_longs);
+  pb->set_serial_version(theta_sketch_dup_alloc<A>::SERIAL_VERSION);
+  pb->set_sketch_type(SKETCH_TYPE);
+  const uint8_t flags_byte(
+      (1 << theta_sketch_dup_alloc<A>::flags::IS_COMPACT) |
+      (1 << theta_sketch_dup_alloc<A>::flags::IS_READ_ONLY) |
+      (this->is_empty() ? 1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY : 0) |
+      (this->is_ordered() ? 1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED
+                          : 0));
+  pb->set_flags_byte(flags_byte);
+  pb->set_seed_hash(get_seed_hash());
+
+  if (!this->is_empty()) {
+    if (!is_single_item) {
+      pb->set_num_keys(keys_.size());
+      if (this->is_estimation_mode()) {
+        pb->set_theta(this->theta_);
+      }
+    }
+    for (auto key : keys_) {
+      auto* hash_pair = pb->add_keys();
+      hash_pair->set_hash_val(key.first);
+      hash_pair->set_cnt(key.second);
+    }
+  }
+}
+
+template <typename A>
 vector_u8<A> compact_theta_sketch_dup_alloc<A>::serialize(
     unsigned header_size_bytes) const {
   const bool is_single_item = keys_.size() == 1 && !this->is_estimation_mode();
@@ -1756,6 +1801,55 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(std::istream& is,
   const bool is_ordered =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED);
   if (!is.good()) throw std::runtime_error("error reading from std::istream");
+  if (!is.good()) throw std::runtime_error("error reading from std::istream");
+  return compact_theta_sketch_dup_alloc<A>(is_empty, theta, std::move(keys),
+                                           seed_hash, is_ordered);
+}
+
+template <typename A>
+compact_theta_sketch_dup_alloc<A>
+compact_theta_sketch_dup_alloc<A>::deserialize(
+    datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
+  uint8_t preamble_longs = pb.preamble_longs();
+  uint8_t serial_version = pb.serial_version();
+  uint8_t type = pb.sketch_type();
+  uint8_t flags_byte = pb.flags_byte();
+  uint16_t seed_hash = pb.seed_hash();
+  theta_sketch_dup_alloc<A>::check_sketch_type(type, SKETCH_TYPE);
+  theta_sketch_dup_alloc<A>::check_serial_version(
+      serial_version, theta_sketch_dup_alloc<A>::SERIAL_VERSION);
+  theta_sketch_dup_alloc<A>::check_seed_hash(
+      seed_hash, theta_sketch_dup_alloc<A>::get_seed_hash(seed));
+  return internal_deserialize(pb, preamble_longs, flags_byte, seed_hash);
+}
+
+template <typename A>
+compact_theta_sketch_dup_alloc<A>
+compact_theta_sketch_dup_alloc<A>::internal_deserialize(
+    datasketches_pb::Update_theta_sketch_dup& pb, uint8_t flags_byte,
+    uint8_t preamble_longs, uint16_t seed_hash) {
+  uint64_t theta = theta_sketch_dup_alloc<A>::MAX_THETA;
+  uint32_t num_keys = 0;
+
+  const bool is_empty =
+      flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
+  if (!is_empty) {
+    if (preamble_longs == 1) {
+      num_keys = 1;
+    } else {
+      num_keys = pb.num_keys();
+      if (preamble_longs > 2) {
+        theta = pb.theta();
+      }
+    }
+  }
+  vector_u64<A> keys(num_keys);
+  if (!is_empty)
+    for (int i = 0; i < pb.keys_size(); i++)
+      keys[i] = std::make_pair(pb.keys(i).hash_val(), pb.keys(i).cnt());
+
+  const bool is_ordered =
+      flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED);
   return compact_theta_sketch_dup_alloc<A>(is_empty, theta, std::move(keys),
                                            seed_hash, is_ordered);
 }
