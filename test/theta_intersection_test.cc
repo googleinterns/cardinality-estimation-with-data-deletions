@@ -12,9 +12,9 @@ TEST(Intersection, Exact) {
   inter.update(a);
   inter.update(b);
   compact_theta_sketch result = inter.get_result();
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_FALSE(result.is_estimation_mode());
-  ASSERT_EQ(result.get_estimate(), 8000);
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_FALSE(result.is_estimation_mode());
+  EXPECT_EQ(result.get_estimate(), 8000);
 }
 
 TEST(Intersection, Estimation) {
@@ -26,8 +26,8 @@ TEST(Intersection, Estimation) {
   inter.update(a);
   inter.update(b);
   compact_theta_sketch result = inter.get_result();
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_TRUE(result.is_estimation_mode());
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_TRUE(result.is_estimation_mode());
   EXPECT_NEAR(result.get_estimate(), 8000, 200);
 }
 

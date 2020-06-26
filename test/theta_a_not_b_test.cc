@@ -10,9 +10,9 @@ TEST(ANotBTest, Exact) {
   for (int i = 0; i < 10000; i++) a.update(i);
   for (int i = 0; i < 10000; i++) b.update(i + 2000);
   compact_theta_sketch result = a_not_b.compute(a, b);
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_FALSE(result.is_estimation_mode());
-  ASSERT_EQ(result.get_estimate(), 2000);
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_FALSE(result.is_estimation_mode());
+  EXPECT_EQ(result.get_estimate(), 2000);
 }
 
 TEST(ANotBTest, Estimation) {
@@ -22,8 +22,8 @@ TEST(ANotBTest, Estimation) {
   for (int i = 0; i < 10000; i++) a.update(i);
   for (int i = 0; i < 10000; i++) b.update(i + 2000);
   compact_theta_sketch result = a_not_b.compute(a, b);
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_TRUE(result.is_estimation_mode());
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_TRUE(result.is_estimation_mode());
   EXPECT_NEAR(result.get_estimate(), 2000, 200);
 }
 

@@ -20,20 +20,20 @@ TEST(ThetaSketchDup, TestSerializeDeterminedCaseWithoutEstimation) {
   datasketches_pb::Update_theta_sketch_dup serialized_proto;
   a.serialize(&serialized_proto);
   auto b = update_theta_sketch_dup::deserialize(serialized_proto);
-  ASSERT_EQ(a, b);
+  EXPECT_EQ(a, b);
 
   // serialize using bytes
   // a and b should be the same before/after the serialization
   auto serialized_bytes = a.serialize();
   b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
                                            serialized_bytes.size());
-  ASSERT_EQ(a, b);
+  EXPECT_EQ(a, b);
 
   // remove 10 elements, the sketch has 10 remaining elements
   for (int i = 0; i < 10; i++) {
     b.remove(i);
   }
-  ASSERT_EQ(b.get_estimate(), 10);
+  EXPECT_EQ(b.get_estimate(), 10);
 }
 
 TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
@@ -49,14 +49,14 @@ TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
   datasketches_pb::Update_theta_sketch_dup serialized_proto;
   a.serialize(&serialized_proto);
   auto b = update_theta_sketch_dup::deserialize(serialized_proto);
-  ASSERT_EQ(a, b);
+  EXPECT_EQ(a, b);
 
   // serialize using bytes
   // a and b should be the same before/after the serialization
   auto serialized_bytes = a.serialize();
   b = update_theta_sketch_dup::deserialize(serialized_bytes.data(),
                                                 serialized_bytes.size());
-  ASSERT_EQ(a, b);
+  EXPECT_EQ(a, b);
 }
 
 TEST(ThetaSketchDup, TestStringStream) {

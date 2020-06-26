@@ -15,9 +15,9 @@ TEST(Union, Exact) {
   u.update(a);
   u.update(b);
   compact_theta_sketch result = u.get_result();
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_FALSE(result.is_estimation_mode());
-  ASSERT_EQ(result.get_estimate(), 12000);
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_FALSE(result.is_estimation_mode());
+  EXPECT_EQ(result.get_estimate(), 12000);
 }
 
 TEST(Union, Estimation) {
@@ -29,8 +29,8 @@ TEST(Union, Estimation) {
   u.update(a);
   u.update(b);
   compact_theta_sketch result = u.get_result();
-  ASSERT_FALSE(result.is_empty());
-  ASSERT_TRUE(result.is_estimation_mode());
+  EXPECT_FALSE(result.is_empty());
+  EXPECT_TRUE(result.is_estimation_mode());
   EXPECT_NEAR(result.get_estimate(), 12000, 200);
 }
 
