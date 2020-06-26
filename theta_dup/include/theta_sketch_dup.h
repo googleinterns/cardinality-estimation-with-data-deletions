@@ -249,9 +249,9 @@ class theta_sketch_dup_alloc {
 
 template <typename A>
 using AllocU64 = typename std::allocator_traits<A>::template rebind_alloc<
-    std::pair<uint64_t, uint64_t>>;
+    std::pair<uint64_t, int64_t>>;
 template <typename A>
-using vector_u64 = std::vector<std::pair<uint64_t, uint64_t>, AllocU64<A>>;
+using vector_u64 = std::vector<std::pair<uint64_t, int64_t>, AllocU64<A>>;
 
 template <typename A>
 class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
@@ -559,7 +559,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @param table: lg_size of the current hash table
    */
   static bool hash_search_or_insert(uint64_t hash,
-                                    std::pair<uint64_t, uint64_t>* table,
+                                    std::pair<uint64_t, int64_t>* table,
                                     uint8_t lg_size);
   /**
    * search hash values, if exists decrease the count
@@ -570,10 +570,10 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @param table: lg_size of the current hash table
    */
   static bool hash_search_or_remove(uint64_t hash,
-                                    std::pair<uint64_t, uint64_t>* table,
+                                    std::pair<uint64_t, int64_t>* table,
                                     uint8_t lg_size);
   static bool hash_search(uint64_t hash,
-                          const std::pair<uint64_t, uint64_t>* table,
+                          const std::pair<uint64_t, int64_t>* table,
                           uint8_t lg_size);
 
   friend theta_sketch_dup_alloc<A>;
@@ -754,19 +754,19 @@ class update_theta_sketch_dup_alloc<A>::builder {
 template <typename A>
 class theta_sketch_dup_alloc<A>::const_iterator
     : public std::iterator<std::input_iterator_tag,
-                           std::pair<uint64_t, uint64_t>> {
+                           std::pair<uint64_t, int64_t>> {
  public:
   const_iterator& operator++();
   const_iterator operator++(int);
   bool operator==(const const_iterator& other) const;
   bool operator!=(const const_iterator& other) const;
-  std::pair<uint64_t, uint64_t> operator*() const;
+  std::pair<uint64_t, int64_t> operator*() const;
 
  private:
-  const std::pair<uint64_t, uint64_t>* keys_;
+  const std::pair<uint64_t, int64_t>* keys_;
   uint32_t size_;
   uint32_t index_;
-  const_iterator(const std::pair<uint64_t, uint64_t>* keys, uint32_t size,
+  const_iterator(const std::pair<uint64_t, int64_t>* keys, uint32_t size,
                  uint32_t index);
   friend class update_theta_sketch_dup_alloc<A>;
   friend class compact_theta_sketch_dup_alloc<A>;
@@ -1129,7 +1129,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
   os.write((char*)&(this->theta_), sizeof(uint64_t));
   // updated in dup: pair instead of uint64_t
   os.write((char*)keys_.data(),
-           sizeof(std::pair<uint64_t, uint64_t>) * keys_.size());
+           sizeof(std::pair<uint64_t, int64_t>) * keys_.size());
 }
 
 template <typename A>
@@ -1138,7 +1138,7 @@ vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
   const uint8_t preamble_longs = 3;
   // updated in dup: pair instead of uint64_t
   const size_t size = header_size_bytes + sizeof(uint64_t) * preamble_longs +
-                      sizeof(std::pair<uint64_t, uint64_t>) * keys_.size();
+                      sizeof(std::pair<uint64_t, int64_t>) * keys_.size();
   vector_u8<A> bytes(size);
   uint8_t* ptr = bytes.data() + header_size_bytes;
 
@@ -1160,7 +1160,7 @@ vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
   ptr += copy_to_mem(&p_, ptr, sizeof(p_));
   ptr += copy_to_mem(&(this->theta_), ptr, sizeof(uint64_t));
   ptr += copy_to_mem(keys_.data(), ptr,
-                     sizeof(std::pair<uint64_t, uint64_t>) * keys_.size());
+                     sizeof(std::pair<uint64_t, int64_t>) * keys_.size());
 
   return bytes;
 }
@@ -1230,7 +1230,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   is.read((char*)&theta, sizeof(theta));
   vector_u64<A> keys(1 << lg_cur_size);
   is.read((char*)keys.data(),
-          sizeof(std::pair<uint64_t, uint64_t>) * keys.size());
+          sizeof(std::pair<uint64_t, int64_t>) * keys.size());
   const bool is_empty =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   if (!is.good()) throw std::runtime_error("error reading from std::istream");
@@ -1324,7 +1324,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   ptr += copy_from_mem(ptr, &theta, sizeof(theta));
   vector_u64<A> keys(table_size);
   ptr += copy_from_mem(ptr, keys.data(),
-                       sizeof(std::pair<uint64_t, uint64_t>) * table_size);
+                       sizeof(std::pair<uint64_t, int64_t>) * table_size);
   const bool is_empty =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
@@ -1510,7 +1510,7 @@ uint32_t update_theta_sketch_dup_alloc<A>::get_stride(uint64_t hash,
 
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
-    uint64_t hash, std::pair<uint64_t, uint64_t>* table, uint8_t lg_size) {
+    uint64_t hash, std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
   const uint32_t stride = get_stride(hash, lg_size);
   uint32_t cur_probe = static_cast<uint32_t>(hash) & mask;
@@ -1534,7 +1534,7 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
 
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search(
-    uint64_t hash, const std::pair<uint64_t, uint64_t>* table,
+    uint64_t hash, const std::pair<uint64_t, int64_t>* table,
     uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
   const uint32_t stride =
@@ -1663,7 +1663,7 @@ void compact_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
       }
     }
     os.write((char*)keys_.data(),
-             sizeof(std::pair<uint64_t, uint64_t>) * keys_.size());
+             sizeof(std::pair<uint64_t, int64_t>) * keys_.size());
   }
 }
 
@@ -1709,7 +1709,7 @@ vector_u8<A> compact_theta_sketch_dup_alloc<A>::serialize(
                                      ? 1
                                      : this->is_estimation_mode() ? 3 : 2;
   const size_t size = header_size_bytes + sizeof(uint64_t) * preamble_longs +
-                      sizeof(std::pair<uint64_t, uint64_t>) * keys_.size();
+                      sizeof(std::pair<uint64_t, int64_t>) * keys_.size();
   vector_u8<A> bytes(size);
   uint8_t* ptr = bytes.data() + header_size_bytes;
 
@@ -1740,7 +1740,7 @@ vector_u8<A> compact_theta_sketch_dup_alloc<A>::serialize(
       }
     }
     ptr += copy_to_mem(keys_.data(), ptr,
-                       sizeof(std::pair<uint64_t, uint64_t>) * keys_.size());
+                       sizeof(std::pair<uint64_t, int64_t>) * keys_.size());
   }
 
   return bytes;
@@ -1796,7 +1796,7 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(std::istream& is,
   vector_u64<A> keys(num_keys);
   if (!is_empty)
     is.read((char*)keys.data(),
-            sizeof(std::pair<uint64_t, uint64_t>) * keys.size());
+            sizeof(std::pair<uint64_t, int64_t>) * keys.size());
 
   const bool is_ordered =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED);
@@ -1913,7 +1913,7 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(const void* bytes,
     }
   }
   const size_t keys_size_bytes =
-      sizeof(std::pair<uint64_t, uint64_t>) * num_keys;
+      sizeof(std::pair<uint64_t, int64_t>) * num_keys;
   check_memory_size(ptr - base + keys_size_bytes, size);
   vector_u64<A> keys(num_keys);
   if (!is_empty) ptr += copy_from_mem(ptr, keys.data(), keys_size_bytes);
@@ -2011,7 +2011,7 @@ update_theta_sketch_dup_alloc<A>::builder::build() const {
 
 template <typename A>
 theta_sketch_dup_alloc<A>::const_iterator::const_iterator(
-    const std::pair<uint64_t, uint64_t>* keys, uint32_t size, uint32_t index)
+    const std::pair<uint64_t, int64_t>* keys, uint32_t size, uint32_t index)
     : keys_(keys), size_(size), index_(index) {
   while (index_ < size_ && keys_[index_].first == 0) ++index_;
 }
@@ -2046,7 +2046,7 @@ bool theta_sketch_dup_alloc<A>::const_iterator::operator!=(
 }
 
 template <typename A>
-std::pair<uint64_t, uint64_t> theta_sketch_dup_alloc<A>::const_iterator::
+std::pair<uint64_t, int64_t> theta_sketch_dup_alloc<A>::const_iterator::
 operator*() const {
   return keys_[index_];
 }
@@ -2144,7 +2144,7 @@ void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
 
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search_or_remove(
-    uint64_t hash, std::pair<uint64_t, uint64_t>* table, uint8_t lg_size) {
+    uint64_t hash, std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
   const uint32_t stride =
       update_theta_sketch_dup_alloc<A>::get_stride(hash, lg_size);

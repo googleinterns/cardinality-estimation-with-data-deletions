@@ -65,7 +65,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_theta_5fsketch_5fdup_2eproto::
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup_hash_map_count, hash_val_),
-  PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup_hash_map_count, cnt_),
+  PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup_hash_map_count, count_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::datasketches_pb::Update_theta_sketch_dup, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -96,16 +96,16 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_theta_5fsketch_5fdup_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\026theta_sketch_dup.proto\022\017datasketches_p"
-  "b\"\337\002\n\027Update_theta_sketch_dup\022\026\n\016preambl"
+  "b\"\341\002\n\027Update_theta_sketch_dup\022\026\n\016preambl"
   "e_longs\030\001 \001(\r\022\026\n\016serial_version\030\002 \001(\r\022\023\n"
   "\013sketch_type\030\003 \001(\r\022\n\n\002rf\030\004 \001(\r\022\023\n\013lg_nom"
   "_size\030\005 \001(\r\022\023\n\013lg_cur_size\030\006 \001(\r\022\022\n\nflag"
   "s_byte\030\007 \001(\r\022\021\n\tseed_hash\030\010 \001(\r\022\020\n\010num_k"
   "eys\030\t \001(\r\022\t\n\001p\030\n \001(\001\022\r\n\005theta\030\013 \001(\004\022E\n\004k"
   "eys\030\014 \003(\01327.datasketches_pb.Update_theta"
-  "_sketch_dup.hash_map_count\032/\n\016hash_map_c"
-  "ount\022\020\n\010hash_val\030\001 \001(\004\022\013\n\003cnt\030\002 \001(\004b\006pro"
-  "to3"
+  "_sketch_dup.hash_map_count\0321\n\016hash_map_c"
+  "ount\022\020\n\010hash_val\030\001 \001(\004\022\r\n\005count\030\002 \001(\003b\006p"
+  "roto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_theta_5fsketch_5fdup_2eproto_deps[1] = {
 };
@@ -115,7 +115,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_the
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_theta_5fsketch_5fdup_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_theta_5fsketch_5fdup_2eproto = {
-  false, false, descriptor_table_protodef_theta_5fsketch_5fdup_2eproto, "theta_sketch_dup.proto", 403,
+  false, false, descriptor_table_protodef_theta_5fsketch_5fdup_2eproto, "theta_sketch_dup.proto", 405,
   &descriptor_table_theta_5fsketch_5fdup_2eproto_once, descriptor_table_theta_5fsketch_5fdup_2eproto_sccs, descriptor_table_theta_5fsketch_5fdup_2eproto_deps, 2, 0,
   schemas, file_default_instances, TableStruct_theta_5fsketch_5fdup_2eproto::offsets,
   file_level_metadata_theta_5fsketch_5fdup_2eproto, 2, file_level_enum_descriptors_theta_5fsketch_5fdup_2eproto, file_level_service_descriptors_theta_5fsketch_5fdup_2eproto,
@@ -143,15 +143,15 @@ Update_theta_sketch_dup_hash_map_count::Update_theta_sketch_dup_hash_map_count(c
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&hash_val_, &from.hash_val_,
-    static_cast<size_t>(reinterpret_cast<char*>(&cnt_) -
-    reinterpret_cast<char*>(&hash_val_)) + sizeof(cnt_));
+    static_cast<size_t>(reinterpret_cast<char*>(&count_) -
+    reinterpret_cast<char*>(&hash_val_)) + sizeof(count_));
   // @@protoc_insertion_point(copy_constructor:datasketches_pb.Update_theta_sketch_dup.hash_map_count)
 }
 
 void Update_theta_sketch_dup_hash_map_count::SharedCtor() {
   ::memset(&hash_val_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&cnt_) -
-      reinterpret_cast<char*>(&hash_val_)) + sizeof(cnt_));
+      reinterpret_cast<char*>(&count_) -
+      reinterpret_cast<char*>(&hash_val_)) + sizeof(count_));
 }
 
 Update_theta_sketch_dup_hash_map_count::~Update_theta_sketch_dup_hash_map_count() {
@@ -186,8 +186,8 @@ void Update_theta_sketch_dup_hash_map_count::Clear() {
   (void) cached_has_bits;
 
   ::memset(&hash_val_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&cnt_) -
-      reinterpret_cast<char*>(&hash_val_)) + sizeof(cnt_));
+      reinterpret_cast<char*>(&count_) -
+      reinterpret_cast<char*>(&hash_val_)) + sizeof(count_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -206,10 +206,10 @@ const char* Update_theta_sketch_dup_hash_map_count::_InternalParse(const char* p
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint64 cnt = 2;
+      // int64 count = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          cnt_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -247,10 +247,10 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(1, this->_internal_hash_val(), target);
   }
 
-  // uint64 cnt = 2;
-  if (this->cnt() != 0) {
+  // int64 count = 2;
+  if (this->count() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(2, this->_internal_cnt(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(2, this->_internal_count(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -276,11 +276,11 @@ size_t Update_theta_sketch_dup_hash_map_count::ByteSizeLong() const {
         this->_internal_hash_val());
   }
 
-  // uint64 cnt = 2;
-  if (this->cnt() != 0) {
+  // int64 count = 2;
+  if (this->count() != 0) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_cnt());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int64Size(
+        this->_internal_count());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -317,8 +317,8 @@ void Update_theta_sketch_dup_hash_map_count::MergeFrom(const Update_theta_sketch
   if (from.hash_val() != 0) {
     _internal_set_hash_val(from._internal_hash_val());
   }
-  if (from.cnt() != 0) {
-    _internal_set_cnt(from._internal_cnt());
+  if (from.count() != 0) {
+    _internal_set_count(from._internal_count());
   }
 }
 
@@ -344,8 +344,8 @@ void Update_theta_sketch_dup_hash_map_count::InternalSwap(Update_theta_sketch_du
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup_hash_map_count, cnt_)
-      + sizeof(Update_theta_sketch_dup_hash_map_count::cnt_)
+      PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup_hash_map_count, count_)
+      + sizeof(Update_theta_sketch_dup_hash_map_count::count_)
       - PROTOBUF_FIELD_OFFSET(Update_theta_sketch_dup_hash_map_count, hash_val_)>(
           reinterpret_cast<char*>(&hash_val_),
           reinterpret_cast<char*>(&other->hash_val_));

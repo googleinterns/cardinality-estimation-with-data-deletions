@@ -13,6 +13,7 @@
 #include <random>
 #include <string>
 
+namespace datasketches {
 class gen_string {
  public:
   /*
@@ -93,5 +94,7 @@ class gen_string {
     for (char ch = 'a'; ch <= 'z'; ch++) pool.push_back(ch);
   }
 };
+
+} /* namespace datasketches */
 
 #endif

@@ -184,7 +184,7 @@ class Update_theta_sketch_dup_hash_map_count PROTOBUF_FINAL :
 
   enum : int {
     kHashValFieldNumber = 1,
-    kCntFieldNumber = 2,
+    kCountFieldNumber = 2,
   };
   // uint64 hash_val = 1;
   void clear_hash_val();
@@ -195,13 +195,13 @@ class Update_theta_sketch_dup_hash_map_count PROTOBUF_FINAL :
   void _internal_set_hash_val(::PROTOBUF_NAMESPACE_ID::uint64 value);
   public:
 
-  // uint64 cnt = 2;
-  void clear_cnt();
-  ::PROTOBUF_NAMESPACE_ID::uint64 cnt() const;
-  void set_cnt(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  // int64 count = 2;
+  void clear_count();
+  ::PROTOBUF_NAMESPACE_ID::int64 count() const;
+  void set_count(::PROTOBUF_NAMESPACE_ID::int64 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_cnt() const;
-  void _internal_set_cnt(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  ::PROTOBUF_NAMESPACE_ID::int64 _internal_count() const;
+  void _internal_set_count(::PROTOBUF_NAMESPACE_ID::int64 value);
   public:
 
   // @@protoc_insertion_point(class_scope:datasketches_pb.Update_theta_sketch_dup.hash_map_count)
@@ -212,7 +212,7 @@ class Update_theta_sketch_dup_hash_map_count PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::uint64 hash_val_;
-  ::PROTOBUF_NAMESPACE_ID::uint64 cnt_;
+  ::PROTOBUF_NAMESPACE_ID::int64 count_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_theta_5fsketch_5fdup_2eproto;
 };
@@ -516,24 +516,24 @@ inline void Update_theta_sketch_dup_hash_map_count::set_hash_val(::PROTOBUF_NAME
   // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.hash_map_count.hash_val)
 }
 
-// uint64 cnt = 2;
-inline void Update_theta_sketch_dup_hash_map_count::clear_cnt() {
-  cnt_ = PROTOBUF_ULONGLONG(0);
+// int64 count = 2;
+inline void Update_theta_sketch_dup_hash_map_count::clear_count() {
+  count_ = PROTOBUF_LONGLONG(0);
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint64 Update_theta_sketch_dup_hash_map_count::_internal_cnt() const {
-  return cnt_;
+inline ::PROTOBUF_NAMESPACE_ID::int64 Update_theta_sketch_dup_hash_map_count::_internal_count() const {
+  return count_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint64 Update_theta_sketch_dup_hash_map_count::cnt() const {
-  // @@protoc_insertion_point(field_get:datasketches_pb.Update_theta_sketch_dup.hash_map_count.cnt)
-  return _internal_cnt();
+inline ::PROTOBUF_NAMESPACE_ID::int64 Update_theta_sketch_dup_hash_map_count::count() const {
+  // @@protoc_insertion_point(field_get:datasketches_pb.Update_theta_sketch_dup.hash_map_count.count)
+  return _internal_count();
 }
-inline void Update_theta_sketch_dup_hash_map_count::_internal_set_cnt(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+inline void Update_theta_sketch_dup_hash_map_count::_internal_set_count(::PROTOBUF_NAMESPACE_ID::int64 value) {
   
-  cnt_ = value;
+  count_ = value;
 }
-inline void Update_theta_sketch_dup_hash_map_count::set_cnt(::PROTOBUF_NAMESPACE_ID::uint64 value) {
-  _internal_set_cnt(value);
-  // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.hash_map_count.cnt)
+inline void Update_theta_sketch_dup_hash_map_count::set_count(::PROTOBUF_NAMESPACE_ID::int64 value) {
+  _internal_set_count(value);
+  // @@protoc_insertion_point(field_set:datasketches_pb.Update_theta_sketch_dup.hash_map_count.count)
 }
 
 // -------------------------------------------------------------------
