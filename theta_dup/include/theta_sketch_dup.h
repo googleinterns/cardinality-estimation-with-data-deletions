@@ -1184,7 +1184,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(
   for (auto key : keys_) {
     auto* hash_pair = pb->add_keys();
     hash_pair->set_hash_val(key.first);
-    hash_pair->set_cnt(key.second);
+    hash_pair->set_count(key.second);
   }
 }
 
@@ -1269,7 +1269,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   uint64_t theta = pb.theta();
   vector_u64<A> keys(1 << lg_cur_size);
   for (int i = 0; i < pb.keys_size(); i++)
-    keys[i] = std::make_pair(pb.keys(i).hash_val(), pb.keys(i).cnt());
+    keys[i] = std::make_pair(pb.keys(i).hash_val(), pb.keys(i).count());
   const bool is_empty =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
@@ -1696,7 +1696,7 @@ void compact_theta_sketch_dup_alloc<A>::serialize(
     for (auto key : keys_) {
       auto* hash_pair = pb->add_keys();
       hash_pair->set_hash_val(key.first);
-      hash_pair->set_cnt(key.second);
+      hash_pair->set_count(key.second);
     }
   }
 }
@@ -1846,7 +1846,7 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(
   vector_u64<A> keys(num_keys);
   if (!is_empty)
     for (int i = 0; i < pb.keys_size(); i++)
-      keys[i] = std::make_pair(pb.keys(i).hash_val(), pb.keys(i).cnt());
+      keys[i] = std::make_pair(pb.keys(i).hash_val(), pb.keys(i).count());
 
   const bool is_ordered =
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_ORDERED);
@@ -2185,7 +2185,7 @@ constexpr uint8_t lg_size_from_count(uint32_t n, double load_factor) {
                                                                           : 1);
 }
 
-// overlad ==
+// overload ==
 template <typename A>
 bool operator==(theta_sketch_dup_alloc<A> const& l,
                 theta_sketch_dup_alloc<A> const& r) {

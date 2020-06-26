@@ -17,7 +17,7 @@ message Update_theta_sketch_dup {
 
   message hash_map_count {
     uint64 hash_val = 1; 
-    uint64 cnt = 2;
+    uint64 count = 2;
   }
 
   repeated hash_map_count keys = 12;
