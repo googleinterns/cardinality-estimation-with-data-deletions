@@ -191,7 +191,7 @@ class theta_sketch_dup_alloc {
    * sketch
    * @return an instance of a sketch as a unique_ptr
    */
-  static unique_ptr deserialize(datasketches_pb::Update_theta_sketch_dup& pb,
+  static unique_ptr deserialize(datasketches_pb::ThetaSketchDup& pb,
                                 uint64_t seed = DEFAULT_SEED);
 
   /**
@@ -271,7 +271,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
   // serialize to output stream
   virtual void serialize(std::ostream& os) const;
   // serialize to protobuf
-  virtual void serialize(datasketches_pb::Update_theta_sketch_dup* pb) const;
+  virtual void serialize(datasketches_pb::ThetaSketchDup* pb) const;
   // serialize to bytes
   typedef vector_u8<A> vector_bytes;  // alias for users
   // header space is reserved, but not initialized
@@ -483,7 +483,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @return an instance of a sketch
    */
   static update_theta_sketch_dup_alloc<A> deserialize(
-      datasketches_pb::Update_theta_sketch_dup& pb,
+      datasketches_pb::ThetaSketchDup& pb,
       uint64_t seed = DEFAULT_SEED);
 
   /**
@@ -581,7 +581,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
       std::istream& is, resize_factor rf, uint8_t lg_cur_size,
       uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed);
   static update_theta_sketch_dup_alloc<A> internal_deserialize(
-      datasketches_pb::Update_theta_sketch_dup& pb, resize_factor rf,
+      datasketches_pb::ThetaSketchDup& pb, resize_factor rf,
       uint8_t lg_cur_size, uint8_t lg_nom_size, uint8_t flags_byte,
       uint64_t seed);
   static update_theta_sketch_dup_alloc<A> internal_deserialize(
@@ -611,7 +611,7 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
   virtual bool is_ordered() const;
   virtual string<A> to_string(bool print_items = false) const;
   virtual void serialize(std::ostream& os) const;
-  virtual void serialize(datasketches_pb::Update_theta_sketch_dup* pb) const;
+  virtual void serialize(datasketches_pb::ThetaSketchDup* pb) const;
   typedef vector_u8<A> vector_bytes;  // alias for users
   // header space is reserved, but not initialized
   virtual vector_bytes serialize(unsigned header_size_bytes = 0) const;
@@ -637,7 +637,7 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @return an instance of a sketch
    */
   static compact_theta_sketch_dup_alloc<A> deserialize(
-      datasketches_pb::Update_theta_sketch_dup& pb,
+      datasketches_pb::ThetaSketchDup& pb,
       uint64_t seed = DEFAULT_SEED);
 
   /**
@@ -680,7 +680,7 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
       std::istream& is, uint8_t preamble_longs, uint8_t flags_byte,
       uint16_t seed_hash);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
-      datasketches_pb::Update_theta_sketch_dup& pb, uint8_t preamble_longs, uint8_t flags_byte,
+      datasketches_pb::ThetaSketchDup& pb, uint8_t preamble_longs, uint8_t flags_byte,
       uint16_t seed_hash);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
       const void* bytes, size_t size, uint8_t preamble_longs,
@@ -878,7 +878,7 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
 template <typename A>
 typename theta_sketch_dup_alloc<A>::unique_ptr
 theta_sketch_dup_alloc<A>::deserialize(
-    datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
+    datasketches_pb::ThetaSketchDup& pb, uint64_t seed) {
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
   uint8_t lg_nom_size = pb.lg_nom_size();
@@ -1167,7 +1167,7 @@ vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
 
 template <typename A>
 void update_theta_sketch_dup_alloc<A>::serialize(
-    datasketches_pb::Update_theta_sketch_dup* pb) const {
+    datasketches_pb::ThetaSketchDup* pb) const {
   pb->set_serial_version(theta_sketch_dup_alloc<A>::SERIAL_VERSION);
   pb->set_sketch_type(SKETCH_TYPE);
   pb->set_rf(rf_);
@@ -1241,7 +1241,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
 
 template <typename A>
 update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
-    datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
+    datasketches_pb::ThetaSketchDup& pb, uint64_t seed) {
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
   resize_factor rf = static_cast<resize_factor>(pb.rf());
@@ -1261,7 +1261,7 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
 template <typename A>
 update_theta_sketch_dup_alloc<A>
 update_theta_sketch_dup_alloc<A>::internal_deserialize(
-    datasketches_pb::Update_theta_sketch_dup& pb, resize_factor rf,
+    datasketches_pb::ThetaSketchDup& pb, resize_factor rf,
     uint8_t lg_cur_size, uint8_t lg_nom_size, uint8_t flags_byte,
     uint64_t seed) {
   uint32_t num_keys = pb.num_keys();
@@ -1669,7 +1669,7 @@ void compact_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
 
 template <typename A>
 void compact_theta_sketch_dup_alloc<A>::serialize(
-    datasketches_pb::Update_theta_sketch_dup* pb) const {
+    datasketches_pb::ThetaSketchDup* pb) const {
   const bool is_single_item = keys_.size() == 1 && !this->is_estimation_mode();
   const uint8_t preamble_longs = this->is_empty() || is_single_item
                                      ? 1
@@ -1809,7 +1809,7 @@ compact_theta_sketch_dup_alloc<A>::internal_deserialize(std::istream& is,
 template <typename A>
 compact_theta_sketch_dup_alloc<A>
 compact_theta_sketch_dup_alloc<A>::deserialize(
-    datasketches_pb::Update_theta_sketch_dup& pb, uint64_t seed) {
+    datasketches_pb::ThetaSketchDup& pb, uint64_t seed) {
   uint8_t preamble_longs = pb.preamble_longs();
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
@@ -1826,7 +1826,7 @@ compact_theta_sketch_dup_alloc<A>::deserialize(
 template <typename A>
 compact_theta_sketch_dup_alloc<A>
 compact_theta_sketch_dup_alloc<A>::internal_deserialize(
-    datasketches_pb::Update_theta_sketch_dup& pb, uint8_t flags_byte,
+    datasketches_pb::ThetaSketchDup& pb, uint8_t flags_byte,
     uint8_t preamble_longs, uint16_t seed_hash) {
   uint64_t theta = theta_sketch_dup_alloc<A>::MAX_THETA;
   uint32_t num_keys = 0;

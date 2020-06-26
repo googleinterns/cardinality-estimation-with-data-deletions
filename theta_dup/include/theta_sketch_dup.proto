@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datasketches_pb;
 
-message Update_theta_sketch_dup {
+message ThetaSketchDup {
   uint32 preamble_longs = 1;
   uint32 serial_version = 2;
   uint32 sketch_type = 3;
@@ -15,10 +15,10 @@ message Update_theta_sketch_dup {
   double p = 10;
   uint64 theta = 11;
 
-  message hash_map_count {
+  message HashMapCount {
     uint64 hash_val = 1; 
     int64 count = 2;
   }
 
-  repeated hash_map_count keys = 12;
+  repeated HashMapCount keys = 12;
 }

@@ -17,7 +17,7 @@ TEST(ThetaSketchDup, TestSerializeDeterminedCaseWithoutEstimation) {
   
   // serialize using proto
   // a and b should be the same before/after the serialization
-  datasketches_pb::Update_theta_sketch_dup serialized_proto;
+  datasketches_pb::ThetaSketchDup serialized_proto;
   a.serialize(&serialized_proto);
   auto b = update_theta_sketch_dup::deserialize(serialized_proto);
   EXPECT_EQ(a, b);
@@ -46,7 +46,7 @@ TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
   
   // serialize using proto
   // a and b should be the same before/after the serialization
-  datasketches_pb::Update_theta_sketch_dup serialized_proto;
+  datasketches_pb::ThetaSketchDup serialized_proto;
   a.serialize(&serialized_proto);
   auto b = update_theta_sketch_dup::deserialize(serialized_proto);
   EXPECT_EQ(a, b);
@@ -60,10 +60,10 @@ TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
 }
 
 TEST(ThetaSketchDup, TestStringStream) {
-  // @a: theta sketch with storage set to be [2^12, 2^12*threshold)
+  // @a: theta sketch with storage set to be [2^15 2^15*threshold)
   // @gen: random string generator
   // input data stream are random strings with random length
-  auto a = update_theta_sketch_dup::builder().set_lg_k(12).build();
+  auto a = update_theta_sketch_dup::builder().set_lg_k(15).build();
   gen_string gen;
   for (int i = 0; i < 1000000; i++) a.update(gen.next());
   // expect the estimation near exact value with 2% accuarcy
@@ -71,14 +71,14 @@ TEST(ThetaSketchDup, TestStringStream) {
 }
 
 TEST(ThetaSketchDup, TestGaussianInput) {
-  // @a: theta sketch with storage set to be [2^12, 2^12*threshold)
+  // @a: theta sketch with storage set to be [2^15, 2^15*threshold)
   // @stddev: standard deviation of the gaussian dist
   // @gen: random number generator
   // @d: normal distribution with standard deviation stddev
   // @current_distinct_elements: 
   // input data stream are random strings with random length
-  int stddev = 100000;
-  auto a = update_theta_sketch_dup::builder().set_lg_k(12).build();
+  int stddev = 1000000;
+  auto a = update_theta_sketch_dup::builder().set_lg_k(15).build();
   std::random_device rd{};
   std::mt19937 gen{rd()};
   std::normal_distribution<> d{0, static_cast<double>(stddev)};
