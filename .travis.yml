@@ -15,4 +15,5 @@ addons:
       - bazel
 
 script:
-  - bazel test //test:theta_test
+  - bazel test //test:theta_sketch_dup
+  - bazel test //test:theta_sketch_set

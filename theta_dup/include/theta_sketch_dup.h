@@ -39,7 +39,7 @@
 #include "memory_operations.hpp"
 #include "serde.hpp"
 
-#include "theta_sketch_dup.pb.h"
+#include "theta_dup/include/theta_sketch_dup.pb.h"
 
 namespace datasketches {
 
