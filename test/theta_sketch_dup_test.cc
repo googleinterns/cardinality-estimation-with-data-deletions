@@ -51,6 +51,10 @@ TEST(ThetaSketchDup, TestSerializeUnderterminedCaseUnderEstimation) {
   auto b = update_theta_sketch_dup::deserialize(serialized_proto);
   EXPECT_EQ(a, b);
 
+  for (int i = 5000; i < 20000; i++) a.update(i);
+  for (int i = 5000; i < 20000; i++) b.update(i);
+  EXPECT_EQ(a, b);
+
   // serialize using bytes
   // a and b should be the same before/after the serialization
   auto serialized_bytes = a.serialize();
