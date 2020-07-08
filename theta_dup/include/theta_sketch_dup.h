@@ -123,6 +123,8 @@ class theta_sketch_dup_alloc {
 
   /**
    * @return theta as a fraction from 0 to 1 (effective sampling rate)
+   * theta is hashed as an uint64 value, effective sampling rate =
+   * theta/MAX_THETA
    */
   double get_theta() const;
 
@@ -484,8 +486,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @return an instance of a sketch
    */
   static update_theta_sketch_dup_alloc<A> deserialize(
-      datasketches_pb::ThetaSketchDup& pb,
-      uint64_t seed = DEFAULT_SEED);
+      datasketches_pb::ThetaSketchDup& pb, uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a given array of bytes.
@@ -638,8 +639,7 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @return an instance of a sketch
    */
   static compact_theta_sketch_dup_alloc<A> deserialize(
-      datasketches_pb::ThetaSketchDup& pb,
-      uint64_t seed = DEFAULT_SEED);
+      datasketches_pb::ThetaSketchDup& pb, uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a given array of bytes.
@@ -681,8 +681,8 @@ class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
       std::istream& is, uint8_t preamble_longs, uint8_t flags_byte,
       uint16_t seed_hash);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
-      datasketches_pb::ThetaSketchDup& pb, uint8_t preamble_longs, uint8_t flags_byte,
-      uint16_t seed_hash);
+      datasketches_pb::ThetaSketchDup& pb, uint8_t preamble_longs,
+      uint8_t flags_byte, uint16_t seed_hash);
   static compact_theta_sketch_dup_alloc<A> internal_deserialize(
       const void* bytes, size_t size, uint8_t preamble_longs,
       uint8_t flags_byte, uint16_t seed_hash);
@@ -878,8 +878,8 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
 
 template <typename A>
 typename theta_sketch_dup_alloc<A>::unique_ptr
-theta_sketch_dup_alloc<A>::deserialize(
-    datasketches_pb::ThetaSketchDup& pb, uint64_t seed) {
+theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::ThetaSketchDup& pb,
+                                       uint64_t seed) {
   uint8_t serial_version = pb.serial_version();
   uint8_t type = pb.sketch_type();
   uint8_t lg_nom_size = pb.lg_nom_size();
@@ -1262,9 +1262,8 @@ update_theta_sketch_dup_alloc<A> update_theta_sketch_dup_alloc<A>::deserialize(
 template <typename A>
 update_theta_sketch_dup_alloc<A>
 update_theta_sketch_dup_alloc<A>::internal_deserialize(
-    datasketches_pb::ThetaSketchDup& pb, resize_factor rf,
-    uint8_t lg_cur_size, uint8_t lg_nom_size, uint8_t flags_byte,
-    uint64_t seed) {
+    datasketches_pb::ThetaSketchDup& pb, resize_factor rf, uint8_t lg_cur_size,
+    uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed) {
   uint32_t num_keys = pb.num_keys();
   float p = pb.p();
   uint64_t theta = pb.theta();
@@ -1535,8 +1534,7 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
 
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search(
-    uint64_t hash, const std::pair<uint64_t, int64_t>* table,
-    uint8_t lg_size) {
+    uint64_t hash, const std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
   const uint32_t stride =
       update_theta_sketch_dup_alloc<A>::get_stride(hash, lg_size);
@@ -2135,7 +2133,9 @@ void update_theta_sketch_dup_alloc<A>::remove(const void* data,
 
 template <typename A>
 void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
-  if (this->is_empty_) throw std::logic_error("Can't remove an element from an empty set: no data yet");
+  if (this->is_empty_)
+    throw std::logic_error(
+        "Can't remove an element from an empty set: no data yet");
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
   if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) {
