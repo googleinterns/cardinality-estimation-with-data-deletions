@@ -85,8 +85,9 @@ class theta_sketch_dup_alloc {
   virtual ~theta_sketch_dup_alloc() = default;
 
   /**
-   * @return true if this sketch represents an empty set (not the same as no
-   * retained entries!)
+   * @return true if this sketch represents an empty set, meaning that no data
+   * has been processed from the data stream yet (not the same as no retained
+   * entries!)
    */
   bool is_empty() const;
 
@@ -2134,7 +2135,7 @@ void update_theta_sketch_dup_alloc<A>::remove(const void* data,
 
 template <typename A>
 void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
-  this->is_empty_ = false;
+  if (this->is_empty_) throw std::logic_error("Can't remove an element from an empty set: no data yet");
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
   if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) {
