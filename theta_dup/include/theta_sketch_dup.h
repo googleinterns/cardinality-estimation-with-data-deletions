@@ -761,6 +761,9 @@ class update_theta_sketch_dup_alloc<A>::builder {
   float p_;
   uint64_t seed_;
 
+  /**
+   * getting initial lg(hash_table_size)
+   */
   static uint8_t starting_sub_multiple(uint8_t lg_tgt, uint8_t lg_min,
                                        uint8_t lg_rf);
 };
