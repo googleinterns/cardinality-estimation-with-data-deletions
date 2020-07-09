@@ -178,7 +178,7 @@ class theta_sketch_dup_alloc {
    */
   typedef std::unique_ptr<theta_sketch_dup_alloc<A>,
                           std::function<void(theta_sketch_dup_alloc<A>*)>>
-      unique_ptr;
+      theta_sketch_dup_ptr;
 
   /**
    * This method deserializes a sketch from a given stream.
@@ -187,7 +187,7 @@ class theta_sketch_dup_alloc {
    * sketch
    * @return an instance of a sketch as a unique_ptr
    */
-  static unique_ptr deserialize(std::istream& is, uint64_t seed = DEFAULT_SEED);
+  static theta_sketch_dup_ptr deserialize(std::istream& is, uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a protobuf.
@@ -196,7 +196,7 @@ class theta_sketch_dup_alloc {
    * sketch
    * @return an instance of a sketch as a unique_ptr
    */
-  static unique_ptr deserialize(datasketches_pb::ThetaSketchDup& pb,
+  static theta_sketch_dup_ptr deserialize(datasketches_pb::ThetaSketchDup& pb,
                                 uint64_t seed = DEFAULT_SEED);
 
   /**
@@ -207,7 +207,7 @@ class theta_sketch_dup_alloc {
    * sketch
    * @return an instance of the sketch
    */
-  static unique_ptr deserialize(const void* bytes, size_t size,
+  static theta_sketch_dup_ptr deserialize(const void* bytes, size_t size,
                                 uint64_t seed = DEFAULT_SEED);
 
   class const_iterator;
@@ -837,7 +837,7 @@ uint64_t theta_sketch_dup_alloc<A>::get_theta64() const {
 }
 
 template <typename A>
-typename theta_sketch_dup_alloc<A>::unique_ptr
+typename theta_sketch_dup_alloc<A>::theta_sketch_dup_ptr
 theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
   uint8_t preamble_longs;
   is.read((char*)&preamble_longs, sizeof(preamble_longs));
@@ -864,7 +864,7 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         update_theta_sketch_dup_alloc<A>>
         AU;
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AU().allocate(1)) update_theta_sketch_dup_alloc<A>(
                 update_theta_sketch_dup_alloc<A>::internal_deserialize(
@@ -878,7 +878,7 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         compact_theta_sketch_dup_alloc<A>>
         AC;
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AC().allocate(1)) compact_theta_sketch_dup_alloc<A>(
                 compact_theta_sketch_dup_alloc<A>::internal_deserialize(
@@ -894,7 +894,7 @@ theta_sketch_dup_alloc<A>::deserialize(std::istream& is, uint64_t seed) {
 }
 
 template <typename A>
-typename theta_sketch_dup_alloc<A>::unique_ptr
+typename theta_sketch_dup_alloc<A>::theta_sketch_dup_ptr
 theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::ThetaSketchDup& pb,
                                        uint64_t seed) {
   uint8_t serial_version = pb.serial_version();
@@ -914,7 +914,7 @@ theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::ThetaSketchDup& pb,
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         update_theta_sketch_dup_alloc<A>>
         AU;
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AU().allocate(1)) update_theta_sketch_dup_alloc<A>(
                 update_theta_sketch_dup_alloc<A>::internal_deserialize(
@@ -929,7 +929,7 @@ theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::ThetaSketchDup& pb,
         compact_theta_sketch_dup_alloc<A>>
         AC;
     uint8_t preamble_longs = pb.preamble_longs();
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AC().allocate(1)) compact_theta_sketch_dup_alloc<A>(
                 compact_theta_sketch_dup_alloc<A>::internal_deserialize(
@@ -945,7 +945,7 @@ theta_sketch_dup_alloc<A>::deserialize(datasketches_pb::ThetaSketchDup& pb,
 }
 
 template <typename A>
-typename theta_sketch_dup_alloc<A>::unique_ptr
+typename theta_sketch_dup_alloc<A>::theta_sketch_dup_ptr
 theta_sketch_dup_alloc<A>::deserialize(const void* bytes, size_t size,
                                        uint64_t seed) {
   ensure_minimum_memory(size, static_cast<size_t>(8));
@@ -975,7 +975,7 @@ theta_sketch_dup_alloc<A>::deserialize(const void* bytes, size_t size,
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         update_theta_sketch_dup_alloc<A>>
         AU;
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AU().allocate(1)) update_theta_sketch_dup_alloc<A>(
                 update_theta_sketch_dup_alloc<A>::internal_deserialize(
@@ -990,7 +990,7 @@ theta_sketch_dup_alloc<A>::deserialize(const void* bytes, size_t size,
     typedef typename std::allocator_traits<A>::template rebind_alloc<
         compact_theta_sketch_dup_alloc<A>>
         AC;
-    return unique_ptr(
+    return theta_sketch_dup_ptr(
         static_cast<theta_sketch_dup_alloc<A>*>(
             new (AC().allocate(1)) compact_theta_sketch_dup_alloc<A>(
                 compact_theta_sketch_dup_alloc<A>::internal_deserialize(
