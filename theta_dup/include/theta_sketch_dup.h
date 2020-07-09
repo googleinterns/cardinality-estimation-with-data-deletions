@@ -241,6 +241,12 @@ class theta_sketch_dup_alloc {
   static uint16_t get_seed_hash(uint64_t seed);
 
   static void check_sketch_type(uint8_t actual, uint8_t expected);
+  /*
+   * Check if the actual version of the serialized data is the same as the
+   * expected version of the serialize / deserialize.
+   * @actual actual version of the serialized data
+   * @expected expected version of the serialized data
+   */
   static void check_serial_version(uint8_t actual, uint8_t expected);
   static void check_seed_hash(uint16_t actual, uint16_t expected);
 
