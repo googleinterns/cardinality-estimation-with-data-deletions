@@ -170,10 +170,12 @@ class theta_sketch_dup_alloc {
    */
   virtual vector_bytes serialize(unsigned header_size_bytes = 0) const = 0;
 
-  // This is a convenience alias for users
-  // The type returned by the following deserialize methods
-  // It is not possible to return instances of an abstract type, so this has to
-  // be a pointer
+  /**
+   * This is a convenience alias for users.
+   * The type returned by the following deserialize methods.
+   * It is not possible to return instances of an abstract type, so this has to
+   * be a pointer.
+   */
   typedef std::unique_ptr<theta_sketch_dup_alloc<A>,
                           std::function<void(theta_sketch_dup_alloc<A>*)>>
       unique_ptr;
@@ -1128,7 +1130,6 @@ void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
   os.write((char*)&num_keys_, sizeof(num_keys_));
   os.write((char*)&p_, sizeof(p_));
   os.write((char*)&(this->theta_), sizeof(uint64_t));
-  // updated in dup: pair instead of uint64_t
   os.write((char*)keys_.data(),
            sizeof(std::pair<uint64_t, int64_t>) * keys_.size());
 }
@@ -1137,7 +1138,6 @@ template <typename A>
 vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
     unsigned header_size_bytes) const {
   const uint8_t preamble_longs = 3;
-  // updated in dup: pair instead of uint64_t
   const size_t size = header_size_bytes + sizeof(uint64_t) * preamble_longs +
                       sizeof(std::pair<uint64_t, int64_t>) * keys_.size();
   vector_u8<A> bytes(size);
