@@ -275,6 +275,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
  public:
   class builder;
   enum resize_factor { X1, X2, X4, X8 };
+  // @SKETCH_TYPE=2 corresponding to update_theta_sketch_dup
   static const uint8_t SKETCH_TYPE = 2;
 
   // No constructor here. Use builder instead.
@@ -610,6 +611,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
 template <typename A>
 class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
  public:
+  // @SKETCH_TYPE=3 corresponding to compact_theta_sketch_dup
   static const uint8_t SKETCH_TYPE = 3;
 
   // No constructor here.
