@@ -187,7 +187,8 @@ class theta_sketch_dup_alloc {
    * sketch
    * @return an instance of a sketch as a unique_ptr
    */
-  static theta_sketch_dup_ptr deserialize(std::istream& is, uint64_t seed = DEFAULT_SEED);
+  static theta_sketch_dup_ptr deserialize(std::istream& is,
+                                          uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a protobuf.
@@ -197,7 +198,7 @@ class theta_sketch_dup_alloc {
    * @return an instance of a sketch as a unique_ptr
    */
   static theta_sketch_dup_ptr deserialize(datasketches_pb::ThetaSketchDup& pb,
-                                uint64_t seed = DEFAULT_SEED);
+                                          uint64_t seed = DEFAULT_SEED);
 
   /**
    * This method deserializes a sketch from a given array of bytes.
@@ -208,7 +209,7 @@ class theta_sketch_dup_alloc {
    * @return an instance of the sketch
    */
   static theta_sketch_dup_ptr deserialize(const void* bytes, size_t size,
-                                uint64_t seed = DEFAULT_SEED);
+                                          uint64_t seed = DEFAULT_SEED);
 
   class const_iterator;
 
@@ -752,7 +753,9 @@ class update_theta_sketch_dup_alloc<A>::builder {
   builder& set_seed(uint64_t seed);
 
   /**
-   * This is to create an instance of the sketch with predefined parameters.
+   * This is to create an instance of the sketch with predefined parameters:
+   * lg_cur_size_, lg_nom_size_, rf_, p_, seed_ in class
+   * update_theta_sketch_dup_alloc.
    * @return and instance of the sketch
    */
   update_theta_sketch_dup_alloc<A> build() const;
