@@ -612,7 +612,13 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
       uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed);
 };
 
-// compact sketch
+/**
+ * compact sketch
+ * This type of sketch can only be used to
+ *   1. Get information of the current data stream, e.g. estimation of the current cardinality.
+ *   2. Set operations with other theta_sketches.
+ * It can't perform update()/remove() with new elements coming from the data stream.
+ */
 
 template <typename A>
 class compact_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
