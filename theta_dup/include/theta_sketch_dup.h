@@ -1524,6 +1524,7 @@ template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
     uint64_t hash, std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
+  // step size of linear probing
   const uint32_t stride = get_stride(hash, lg_size);
   uint32_t cur_probe = static_cast<uint32_t>(hash) & mask;
 
