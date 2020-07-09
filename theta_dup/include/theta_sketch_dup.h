@@ -231,6 +231,12 @@ class theta_sketch_dup_alloc {
   virtual bool is_equal(const theta_sketch_dup_alloc& r) const;
 
  protected:
+  /**
+   * IS_BIG_ENDIAN: position of the bit that represents whether the system is a
+   * big endian one, it's not used in the current version of the code.
+   * IS_COMPACT: position of the bit that represents whether the sketch is in
+   * compact form.
+   */
   enum flags { IS_BIG_ENDIAN, IS_READ_ONLY, IS_EMPTY, IS_COMPACT, IS_ORDERED };
 
   bool is_empty_;
