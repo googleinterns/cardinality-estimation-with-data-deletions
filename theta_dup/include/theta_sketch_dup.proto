@@ -3,22 +3,78 @@ syntax = "proto3";
 package datasketches_pb;
 
 message ThetaSketchDup {
+  /*
+   * @preamble_longs
+   *   1: empty set / single item set
+   *   2: stored all hash values, so the cardinality is exact
+   *   3: stored hash values that < theta, so the cardinality is in estimation
+   *  mode
+   */
   uint32 preamble_longs = 1;
+
+  /*
+   * @serial_version
+   *   the version of the serialized data, check whether the version is
+   *  compatible with the current version of the serialize / deserialize
+   */
   uint32 serial_version = 2;
+
+  /*
+   * @sketch_type
+   *   2: update_theta_sketch
+   *   3: compact_theta_sketch
+   */
   uint32 sketch_type = 3;
+
+  /* @rf
+   * resize factor of the hash table
+   */
   uint32 rf = 4;
+
+  /* @lg_nom_size
+   * log of the nominal size of the hash table
+   */
   uint32 lg_nom_size = 5;
+
+  /* @lg_cur_size
+   * log of the current size of the hash table
+   */
   uint32 lg_cur_size = 6;
+
+  /* @flags_byte using 5 bits to store the 5 flags:
+   *   { IS_BIG_ENDIAN, IS_READ_ONLY, IS_EMPTY, IS_COMPACT, IS_ORDERED }
+   *   if flags_byte & 00001 is true, then it is a big endian system
+   *   if flags_byte & 00010 is true, then it is read only
+   *   if flags_byte & 00100 is true, then it is empty
+   *   if flags_byte & 01000 is true, then it is compact
+   *   if flags_byte & 10000 is true, then it is ordered
+   */
   uint32 flags_byte = 7;
+
+  /* @seed_hash seed of the hash function */
   uint32 seed_hash = 8;
+
+  /* @num_keys number of hashes in the hash table */
   uint32 num_keys = 9;
+
+  /* @p initial sampling rate: initial theta=MAX_THETA*p
+   *   by default p=1
+   */
   double p = 10;
+
+  /* @theta
+   *   current theta of the sketch: all hash values<theta are kept
+   */
   uint64 theta = 11;
 
   message HashMapCount {
-    uint64 hash_val = 1; 
+    uint64 hash_val = 1;
     int64 count = 2;
   }
 
+  /* @keys hash table, for each element
+   *   @hash_val represents the hash value of this element
+   *   @count represents the count of this element
+   */
   repeated HashMapCount keys = 12;
 }
