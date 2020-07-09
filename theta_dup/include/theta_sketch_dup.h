@@ -241,6 +241,11 @@ class theta_sketch_dup_alloc {
   enum flags { IS_BIG_ENDIAN, IS_READ_ONLY, IS_EMPTY, IS_COMPACT, IS_ORDERED };
 
   bool is_empty_;
+  /**
+   * @theta_ is the threshold of deciding whether to store the hash value of an
+   * element in the data stream. If hash<theta_, then we update the hash table;
+   * otherwise, just ignore this element.
+   */
   uint64_t theta_;
 
   theta_sketch_dup_alloc(bool is_empty, uint64_t theta);
