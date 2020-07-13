@@ -30,6 +30,7 @@
 #include <ostream>
 #include <sstream>
 #include <vector>
+#include <bitset>
 
 #include "utils.h"
 
@@ -1182,9 +1183,43 @@ void update_theta_sketch_dup_alloc<A>::serialize(
   pb->set_p(p_);
   pb->set_theta(this->theta_);
 
-  for (auto key : keys_) {
+  // uint64_t mask=(1<<lg_cur_size_)-1;
+  // uint64_t cnt=0;
+  // for (uint64_t pos=0; pos<keys_.size(); pos++) {
+  //   auto key = keys_[pos];
+  //   auto* hash_pair = pb->add_keys();
+  //   if (key.second==0) {
+  //     hash_pair->set_hash_val(0);
+  //     hash_pair->set_count(0);
+  //     hash_pair->set_flag(false);
+  //     continue;
+  //   }
+  //   uint32_t val = static_cast<uint32_t>(key.first) & mask;
+  //   if ((val ^ pos)==0) {
+  //     cnt++;
+  //     hash_pair->set_hash_val(key.first>>lg_cur_size_);
+  //     hash_pair->set_count(key.second);
+  //     hash_pair->set_flag(true);
+  //   } else {
+  //     hash_pair->set_hash_val(key.first);
+  //     hash_pair->set_count(key.second);
+  //     hash_pair->set_flag(false);
+  //   }
+  //   // std::bitset<64> tmp1(val1);
+  //   // std::bitset<64> tmp2(pos);
+  //   // std::cout << tmp1 << std::endl << tmp2 << std::endl << std::endl;
+  // }
+  // std::cout << cnt << " " << num_keys_ << std::endl;
+
+  std::map<uint64_t,int64_t> tmp;
+  for (auto key : keys_) tmp[key.first]=key.second;
+  
+  uint64_t prev=0;
+  for (auto key : tmp) {
+    if (key.first==0) continue;
     auto* hash_pair = pb->add_keys();
-    hash_pair->set_hash_val(key.first);
+    hash_pair->set_hash_val(key.first-prev);
+    prev=key.first;
     hash_pair->set_count(key.second);
   }
 }
