@@ -1496,7 +1496,7 @@ void update_theta_sketch_dup_alloc<A>::resize() {
   const uint32_t new_size = 1 << lg_new_size;
   vector_u64<A> new_keys(new_size, std::make_pair(0, 0));
   for (uint32_t i = 0; i < keys_.size(); i++) {
-    if (keys_[i].first != 0) {
+    if (keys_[i].first != 0 && keys_[i].second != 0) {
       hash_search_or_insert(keys_[i].first, new_keys.data(),
                             lg_new_size);  // TODO hash_insert
     }
@@ -1514,7 +1514,8 @@ void update_theta_sketch_dup_alloc<A>::rebuild() {
   vector_u64<A> new_keys(keys_.size(), std::make_pair(0, 0));
   num_keys_ = 0;
   for (uint32_t i = 0; i < keys_.size(); i++) {
-    if (keys_[i].first != 0 && keys_[i].first < this->theta_) {
+    if (keys_[i].first != 0 && keys_[i].first < this->theta_ &&
+        keys_[i].second != 0) {
       hash_search_or_insert(keys_[i].first, new_keys.data(),
                             lg_cur_size_);  // TODO hash_insert
       num_keys_++;
@@ -2170,9 +2171,7 @@ void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
         "Can't remove an element from an empty set: no data yet");
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
-  if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) {
-    num_keys_--;
-  }
+  hash_search_or_remove(hash, keys_.data(), lg_cur_size_);
 }
 
 template <typename A>
@@ -2187,10 +2186,8 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_remove(
     const uint64_t value = table[cur_probe].first;
     if (value == hash) {
       table[cur_probe].second--;
-      if (table[cur_probe].second == 0) {
-        table[cur_probe].first = 0;
-        return true;
-      }
+      if (table[cur_probe].second<0)
+      throw std::logic_error("this element doesn't exist");
       return false;
     }
     cur_probe = (cur_probe + stride) & mask;
