@@ -2171,7 +2171,7 @@ void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
         "Can't remove an element from an empty set: no data yet");
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
-  if hash_search_or_remove(hash, keys_.data(), lg_cur_size_) num_keys_--;
+  if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) num_keys_--;
 }
 
 template <typename A>
