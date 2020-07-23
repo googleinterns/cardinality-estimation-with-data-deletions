@@ -9,12 +9,11 @@
 #ifndef GEN_STRING_
 #define GEN_STRING_
 
-#include <iostream>
 #include <random>
 #include <string>
 
 namespace datasketches {
-class gen_string {
+class GenString {
  public:
   /*
    * default constructor
@@ -23,7 +22,7 @@ class gen_string {
    * @max_len=20
    * @pool={'0',...,'9','A',...,'Z','a',...,'z'}
    */
-  gen_string() : seed(1), min_len(6), max_len(20) {
+  GenString() : seed(1), min_len(6), max_len(20) {
     gen.seed(seed);
     generate_pool();
     dist_code = std::uniform_int_distribution<int>(0, pool.size() - 1);
@@ -37,7 +36,7 @@ class gen_string {
    * @max_len=max_len0
    * @pool is set to be {'0',...,'9','A',...,'Z','a',...,'z'}
    */
-  gen_string(int seed0, int min_len0, int max_len0)
+  GenString(int seed0, int min_len0, int max_len0)
       : seed(seed0), min_len(min_len0), max_len(max_len0) {
     gen.seed(seed);
     generate_pool();
@@ -52,7 +51,7 @@ class gen_string {
    * @max_len=max_len0
    * @pool=pool0
    */
-  gen_string(int seed0, int min_len0, int max_len0,
+  GenString(int seed0, int min_len0, int max_len0,
              const std::vector<char>& pool0)
       : seed(seed0), min_len(min_len0), max_len(max_len0), pool(pool0) {
     gen.seed(seed);
