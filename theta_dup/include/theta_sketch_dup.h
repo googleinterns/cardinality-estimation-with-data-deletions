@@ -541,9 +541,12 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * keys_ stores a vector of pairs: the first element in pairs represent the
    * hash value, the second element in pairs represent the number of times this
    * element shows up in the stream
+   * @num_keys_ number of retained elements in the hash table
+   * @num_zeros_ number of retained elements in the hash table that has count 0
    */
   vector_u64<A> keys_;
   uint32_t num_keys_;
+  uint32_t num_zeros_;
   resize_factor rf_;
   float p_;
   uint64_t seed_;
@@ -557,7 +560,8 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
   update_theta_sketch_dup_alloc(bool is_empty, uint64_t theta,
                                 uint8_t lg_cur_size, uint8_t lg_nom_size,
                                 vector_u64<A>&& keys, uint32_t num_keys,
-                                resize_factor rf, float p, uint64_t seed);
+                                uint32_t num_zeros_, resize_factor rf, float p,
+                                uint64_t seed);
 
   void resize();
   void rebuild();
@@ -578,12 +582,13 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * search hash values, if exists increase the count and return true, otherwise
    * insert the value and return false
    * @param hash: the hash value
+   * @param count: count to be updated to the hash value in the hash table
    * @param table: the pointer to the hash table
    * @param table: lg_size of the current hash table
    */
-  static bool hash_search_or_insert(uint64_t hash,
-                                    std::pair<uint64_t, int64_t>* table,
-                                    uint8_t lg_size);
+  static bool hash_search_or_insert(
+      uint64_t hash, uint64_t count, std::pair<uint64_t, int64_t>* table,
+      uint8_t lg_size);
   /**
    * search hash values, if exists decrease the count
    * if the count==0, remove the element from hash table and return true else
@@ -1076,6 +1081,7 @@ update_theta_sketch_dup_alloc<A>::update_theta_sketch_dup_alloc(
       lg_nom_size_(lg_nom_size),
       keys_(1 << lg_cur_size_, std::make_pair(0, 0)),
       num_keys_(0),
+      num_zeros_(0),
       rf_(rf),
       p_(p),
       seed_(seed),
@@ -1086,13 +1092,14 @@ update_theta_sketch_dup_alloc<A>::update_theta_sketch_dup_alloc(
 template <typename A>
 update_theta_sketch_dup_alloc<A>::update_theta_sketch_dup_alloc(
     bool is_empty, uint64_t theta, uint8_t lg_cur_size, uint8_t lg_nom_size,
-    vector_u64<A>&& keys, uint32_t num_keys, resize_factor rf, float p,
-    uint64_t seed)
+    vector_u64<A>&& keys, uint32_t num_keys, uint32_t num_zeros,
+    resize_factor rf, float p, uint64_t seed)
     : theta_sketch_dup_alloc<A>(is_empty, theta),
       lg_cur_size_(lg_cur_size),
       lg_nom_size_(lg_nom_size),
       keys_(std::move(keys)),
       num_keys_(num_keys),
+      num_zeros_(num_zeros),
       rf_(rf),
       p_(p),
       seed_(seed),
@@ -1100,7 +1107,7 @@ update_theta_sketch_dup_alloc<A>::update_theta_sketch_dup_alloc(
 
 template <typename A>
 uint32_t update_theta_sketch_dup_alloc<A>::get_num_retained() const {
-  return num_keys_;
+  return num_keys_ - num_zeros_;
 }
 
 template <typename A>
@@ -1117,23 +1124,21 @@ template <typename A>
 string<A> update_theta_sketch_dup_alloc<A>::to_string(bool print_items) const {
   std::basic_ostringstream<char, std::char_traits<char>, AllocChar<A>> os;
   os << "### Update Theta sketch summary:" << std::endl;
-  os << "   lg nominal size      : " << (int)lg_nom_size_ << std::endl;
-  os << "   lg current size      : " << (int)lg_cur_size_ << std::endl;
-  os << "   num retained keys    : " << num_keys_ << std::endl;
-  os << "   resize factor        : " << (1 << rf_) << std::endl;
-  os << "   sampling probability : " << p_ << std::endl;
-  os << "   seed hash            : " << this->get_seed_hash() << std::endl;
-  os << "   empty?               : " << (this->is_empty() ? "true" : "false")
-     << std::endl;
-  os << "   ordered?             : " << (this->is_ordered() ? "true" : "false")
-     << std::endl;
-  os << "   estimation mode?     : "
-     << (this->is_estimation_mode() ? "true" : "false") << std::endl;
-  os << "   theta (fraction)     : " << this->get_theta() << std::endl;
-  os << "   theta (raw 64-bit)   : " << this->theta_ << std::endl;
-  os << "   estimate             : " << this->get_estimate() << std::endl;
-  os << "   lower bound 95% conf : " << this->get_lower_bound(2) << std::endl;
-  os << "   upper bound 95% conf : " << this->get_upper_bound(2) << std::endl;
+  os << "   lg nominal size                    : " << (int)lg_nom_size_ << std::endl;
+  os << "   lg current size                    : " << (int)lg_cur_size_ << std::endl;
+  os << "   num retained keys                  : " << num_keys_ << std::endl;
+  os << "   num retained keys that has count 0 : " << num_zeros_<< std::endl;
+  os << "   resize factor                      : " << (1 << rf_) << std::endl;
+  os << "   sampling probability               : " << p_ << std::endl;
+  os << "   seed hash                          : " << this->get_seed_hash() << std::endl;
+  os << "   empty?                             : " << (this->is_empty() ? "true" : "false") << std::endl;
+  os << "   ordered?                           : " << (this->is_ordered() ? "true" : "false") << std::endl;
+  os << "   estimation mode?                   : " << (this->is_estimation_mode() ? "true" : "false") << std::endl;
+  os << "   theta (fraction)                   : " << this->get_theta() << std::endl;
+  os << "   theta (raw 64-bit)                 : " << this->theta_ << std::endl;
+  os << "   estimate                           : " << this->get_estimate() << std::endl;
+  os << "   lower bound 95% conf               : " << this->get_lower_bound(2) << std::endl;
+  os << "   upper bound 95% conf               : " << this->get_upper_bound(2) << std::endl;
   os << "### End sketch summary" << std::endl;
   if (print_items) {
     os << "### Retained keys" << std::endl;
@@ -1159,6 +1164,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
   const uint16_t seed_hash = get_seed_hash();
   os.write((char*)&seed_hash, sizeof(seed_hash));
   os.write((char*)&num_keys_, sizeof(num_keys_));
+  os.write((char*)&num_zeros_, sizeof(num_zeros_));
   os.write((char*)&p_, sizeof(p_));
   os.write((char*)&(this->theta_), sizeof(uint64_t));
   os.write((char*)keys_.data(),
@@ -1189,6 +1195,7 @@ vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
   const uint16_t seed_hash = get_seed_hash();
   ptr += copy_to_mem(&seed_hash, ptr, sizeof(seed_hash));
   ptr += copy_to_mem(&num_keys_, ptr, sizeof(num_keys_));
+  ptr += copy_to_mem(&num_zeros_, ptr, sizeof(num_zeros_));
   ptr += copy_to_mem(&p_, ptr, sizeof(p_));
   ptr += copy_to_mem(&(this->theta_), ptr, sizeof(uint64_t));
   ptr += copy_to_mem(keys_.data(), ptr,
@@ -1210,6 +1217,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(
   pb->set_flags_byte(flags_byte);
   pb->set_seed_hash(get_seed_hash());
   pb->set_num_keys(num_keys_);
+  pb->set_num_zeros(num_zeros_);
   pb->set_p(p_);
   pb->set_theta(this->theta_);
 
@@ -1256,6 +1264,8 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
     uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed) {
   uint32_t num_keys;
   is.read((char*)&num_keys, sizeof(num_keys));
+  uint32_t num_zeros;
+  is.read((char*)&num_zeros, sizeof(num_zeros));
   float p;
   is.read((char*)&p, sizeof(p));
   uint64_t theta;
@@ -1268,7 +1278,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   if (!is.good()) throw std::runtime_error("error reading from std::istream");
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
                                           lg_nom_size, std::move(keys),
-                                          num_keys, rf, p, seed);
+                                          num_keys, num_zeros, rf, p, seed);
 }
 
 template <typename A>
@@ -1296,6 +1306,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
     datasketches_pb::ThetaSketchDup& pb, resize_factor rf, uint8_t lg_cur_size,
     uint8_t lg_nom_size, uint8_t flags_byte, uint64_t seed) {
   uint32_t num_keys = pb.num_keys();
+  uint32_t num_zeros = pb.num_zeros();
   float p = pb.p();
   uint64_t theta = pb.theta();
   vector_u64<A> keys(1 << lg_cur_size);
@@ -1305,7 +1316,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
                                           lg_nom_size, std::move(keys),
-                                          num_keys, rf, p, seed);
+                                          num_keys, num_zeros, rf, p, seed);
 }
 
 template <typename A>
@@ -1349,6 +1360,8 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
   const char* ptr = static_cast<const char*>(bytes);
   uint32_t num_keys;
   ptr += copy_from_mem(ptr, &num_keys, sizeof(num_keys));
+  uint32_t num_zeros;
+  ptr += copy_from_mem(ptr, &num_zeros, sizeof(num_zeros));
   float p;
   ptr += copy_from_mem(ptr, &p, sizeof(p));
   uint64_t theta;
@@ -1360,7 +1373,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
       flags_byte & (1 << theta_sketch_dup_alloc<A>::flags::IS_EMPTY);
   return update_theta_sketch_dup_alloc<A>(is_empty, theta, lg_cur_size,
                                           lg_nom_size, std::move(keys),
-                                          num_keys, rf, p, seed);
+                                          num_keys, num_zeros, rf, p, seed);
 }
 
 template <typename A>
@@ -1369,6 +1382,7 @@ bool update_theta_sketch_dup_alloc<A>::is_equal(
   if (!theta_sketch_dup_alloc<A>::is_equal(r)) return false;
   if (this->lg_cur_size_ != r.lg_cur_size_) return false;
   if (this->lg_nom_size_ != r.lg_nom_size_) return false;
+  // TODO: change the comparison mechanism to be comparing the sorted keys
   for (unsigned int i = 0; i < this->num_keys_; i++)
     if (this->keys_[i] != r.keys_[i]) return false;
   if (this->num_keys_ != r.num_keys_) return false;
@@ -1470,7 +1484,7 @@ void update_theta_sketch_dup_alloc<A>::internal_update(uint64_t hash) {
   this->is_empty_ = false;
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
-  if (hash_search_or_insert(hash, keys_.data(), lg_cur_size_)) {
+  if (hash_search_or_insert(hash, 1, keys_.data(), lg_cur_size_)) {
     num_keys_++;
     if (num_keys_ > capacity_) {
       if (lg_cur_size_ <= lg_nom_size_) {
@@ -1497,7 +1511,7 @@ void update_theta_sketch_dup_alloc<A>::resize() {
   vector_u64<A> new_keys(new_size, std::make_pair(0, 0));
   for (uint32_t i = 0; i < keys_.size(); i++) {
     if (keys_[i].first != 0 && keys_[i].second != 0) {
-      hash_search_or_insert(keys_[i].first, new_keys.data(),
+      hash_search_or_insert(keys_[i].first, keys_[i].second, new_keys.data(),
                             lg_new_size);  // TODO hash_insert
     }
   }
@@ -1513,10 +1527,11 @@ void update_theta_sketch_dup_alloc<A>::rebuild() {
   this->theta_ = keys_[pivot].first;
   vector_u64<A> new_keys(keys_.size(), std::make_pair(0, 0));
   num_keys_ = 0;
+  num_zeros_ = 0;
   for (uint32_t i = 0; i < keys_.size(); i++) {
     if (keys_[i].first != 0 && keys_[i].first < this->theta_ &&
         keys_[i].second != 0) {
-      hash_search_or_insert(keys_[i].first, new_keys.data(),
+      hash_search_or_insert(keys_[i].first, keys_[i].second, new_keys.data(),
                             lg_cur_size_);  // TODO hash_insert
       num_keys_++;
     }
@@ -1542,7 +1557,7 @@ uint32_t update_theta_sketch_dup_alloc<A>::get_stride(uint64_t hash,
 
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
-    uint64_t hash, std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
+    uint64_t hash, uint64_t count, std::pair<uint64_t, int64_t>* table, uint8_t lg_size) {
   const uint32_t mask = (1 << lg_size) - 1;
   // step size of linear probing
   const uint32_t stride = get_stride(hash, lg_size);
@@ -1554,10 +1569,10 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
     const uint64_t value = table[cur_probe].first;
     if (value == 0) {
       table[cur_probe].first = hash;  // insert value
-      table[cur_probe].second = 1;    // set the initial count to be 1
+      table[cur_probe].second = count;    // set the initial count to be count
       return true;
     } else if (value == hash) {
-      table[cur_probe].second++;  // count++
+      table[cur_probe].second += count;  // add count to the current count 
       return false;               // found a duplicate
     }
     cur_probe = (cur_probe + stride) & mask;
@@ -1600,6 +1615,7 @@ update_theta_sketch_dup_alloc<A>::end() const {
 }
 
 // compact sketch
+// TODO: remove compact sketch
 
 template <typename A>
 compact_theta_sketch_dup_alloc<A>::compact_theta_sketch_dup_alloc(
@@ -2171,7 +2187,10 @@ void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
         "Can't remove an element from an empty set: no data yet");
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
-  if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) num_keys_--;
+  if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) {
+    num_zeros_++;
+    // if (num_zeros_ / num_keys_ < ZERO_THRESHOLD) 
+  }
 }
 
 template <typename A>
