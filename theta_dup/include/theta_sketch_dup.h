@@ -586,7 +586,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @param table: the pointer to the hash table
    * @param table: lg_size of the current hash table
    */
-  static bool hash_search_or_insert(
+  bool hash_search_or_insert(
       uint64_t hash, uint64_t count, std::pair<uint64_t, int64_t>* table,
       uint8_t lg_size);
   /**
@@ -597,7 +597,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
    * @param table: the pointer to the hash table
    * @param table: lg_size of the current hash table
    */
-  static bool hash_search_or_remove(uint64_t hash,
+  bool hash_search_or_remove(uint64_t hash,
                                     std::pair<uint64_t, int64_t>* table,
                                     uint8_t lg_size);
   static bool hash_search(uint64_t hash,
@@ -1376,6 +1376,7 @@ update_theta_sketch_dup_alloc<A>::internal_deserialize(
                                           num_keys, num_zeros, rf, p, seed);
 }
 
+
 template <typename A>
 bool update_theta_sketch_dup_alloc<A>::is_equal(
     const update_theta_sketch_dup_alloc<A>& r) const {
@@ -1509,10 +1510,13 @@ void update_theta_sketch_dup_alloc<A>::resize() {
   const uint8_t lg_new_size = lg_cur_size_ + factor;
   const uint32_t new_size = 1 << lg_new_size;
   vector_u64<A> new_keys(new_size, std::make_pair(0, 0));
+  num_keys_ = 0;
+  num_zeros_ = 0;
   for (uint32_t i = 0; i < keys_.size(); i++) {
     if (keys_[i].first != 0 && keys_[i].second != 0) {
       hash_search_or_insert(keys_[i].first, keys_[i].second, new_keys.data(),
                             lg_new_size);  // TODO hash_insert
+      num_keys_++;
     }
   }
   keys_ = std::move(new_keys);
@@ -1572,6 +1576,7 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_insert(
       table[cur_probe].second = count;    // set the initial count to be count
       return true;
     } else if (value == hash) {
+      if (table[cur_probe].second == 0) num_zeros_--;
       table[cur_probe].second += count;  // add count to the current count 
       return false;               // found a duplicate
     }
@@ -2188,7 +2193,6 @@ void update_theta_sketch_dup_alloc<A>::internal_remove(uint64_t hash) {
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
   if (hash_search_or_remove(hash, keys_.data(), lg_cur_size_)) {
-    num_zeros_++;
     // if (num_zeros_ / num_keys_ < ZERO_THRESHOLD) 
   }
 }
@@ -2205,7 +2209,10 @@ bool update_theta_sketch_dup_alloc<A>::hash_search_or_remove(
     const uint64_t value = table[cur_probe].first;
     if (value == hash) {
       table[cur_probe].second--;
-      if (table[cur_probe].second==0) return true;
+      if (table[cur_probe].second==0) {
+        num_zeros_++;
+        return true;
+      }
       if (table[cur_probe].second<0)
       throw std::logic_error("this element doesn't exist");
       return false;
