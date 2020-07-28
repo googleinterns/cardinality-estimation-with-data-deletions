@@ -22,12 +22,7 @@ class GenString {
    * @max_len=20
    * @pool={'0',...,'9','A',...,'Z','a',...,'z'}
    */
-  GenString() : seed(1), min_len(6), max_len(20) {
-    gen.seed(seed);
-    generate_pool();
-    dist_code = std::uniform_int_distribution<int>(0, pool.size() - 1);
-    dist_len = std::uniform_int_distribution<int>(min_len, max_len);
-  }
+  GenString() : GenString(1, 6, 20) {}
 
   /*
    * constructor with @seed, @min_len and @max_len given
