@@ -68,7 +68,7 @@ TEST(ThetaSketchDup, TestStringStream) {
   // @gen: random string generator
   // input data stream are random strings with random length
   auto a = update_theta_sketch_dup::builder().set_lg_k(15).build();
-  gen_string gen;
+  GenString gen;
   for (int i = 0; i < 1000000; i++) a.update(gen.next());
   // expect the estimation near exact value with 2% accuarcy
   EXPECT_NEAR(a.get_estimate(), 1000000, 20000);
