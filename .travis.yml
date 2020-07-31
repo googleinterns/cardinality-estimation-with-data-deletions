@@ -1,0 +1,19 @@
+dist: xenial 
+sudo: required
+language: 
+  - cpp
+compiler:
+  - g++
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - sourceline: 'deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8'
+        key_url: 'https://bazel.build/bazel-release.pub.gpg'
+    packages:
+      - g++
+      - bazel
+
+script:
+  - bazel test //test:theta_sketch_dup
+  - bazel test //test:theta_sketch_set
