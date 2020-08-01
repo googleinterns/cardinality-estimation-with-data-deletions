@@ -559,7 +559,7 @@ class update_theta_sketch_dup_alloc : public theta_sketch_dup_alloc<A> {
 
   // TODO: support union
   // friend theta_union_alloc<A>;
-  void internal_update(uint64_t hash);
+  void internal_update(uint64_t hash, int64_t count);
   void internal_remove(uint64_t hash);
 
   // TODO: support intersection
@@ -1016,7 +1016,7 @@ void update_theta_sketch_dup_alloc<A>::serialize(std::ostream& os) const {
 template <typename A>
 vector_u8<A> update_theta_sketch_dup_alloc<A>::serialize(
     unsigned header_size_bytes) const {
-  const uint8_t preamble_longs = 3;
+  const uint8_t preamble_longs = 4;
   const size_t size = header_size_bytes + sizeof(uint64_t) * preamble_longs +
                       sizeof(std::pair<uint64_t, int64_t>) * keys_.size();
   vector_u8<A> bytes(size);
@@ -1312,15 +1312,15 @@ void update_theta_sketch_dup_alloc<A>::update(const void* data,
   const uint64_t hash =
       hashes.h1 >>
       1;  // Java implementation does logical shift >>> to make values positive
-  internal_update(hash);
+  internal_update(hash, 1);
 }
 
 template <typename A>
-void update_theta_sketch_dup_alloc<A>::internal_update(uint64_t hash) {
+void update_theta_sketch_dup_alloc<A>::internal_update(uint64_t hash, int64_t count) {
   this->is_empty_ = false;
   if (hash >= this->theta_ || hash == 0)
     return;  // hash == 0 is reserved to mark empty slots in the table
-  if (hash_search_or_insert(hash, 1, keys_.data(), lg_cur_size_)) {
+  if (hash_search_or_insert(hash, count, keys_.data(), lg_cur_size_)) {
     num_keys_++;
     if (num_keys_ > capacity_) {
       if (lg_cur_size_ <= lg_nom_size_) {
