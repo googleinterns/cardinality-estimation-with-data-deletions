@@ -1,7 +1,5 @@
 Disclaimer: This is not an officially supported Google product.
 
-[![Build Status](https://travis-ci.com/babacry/cardinality-estimation-with-data-deletions.svg?branch=master)](https://travis-ci.com/babacry/cardinality-estimation-with-data-deletions)
-
 # Sketch-Based Cardinality Estimation with Data Deletions
 
 The cardinality of a set is a measure of the "number of distinct elements
